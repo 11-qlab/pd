@@ -1,0 +1,9 @@
+[project]
+name = "purediscover"
+version = "0.1.0"
+description = "Pure Python symbolic law discovery and group exploration"
+requires-python = ">=3.10"
+dependencies = ["sympy>=1.12"]
+
+[tool.setuptools.packages.find]
+include = ["purediscover*"]

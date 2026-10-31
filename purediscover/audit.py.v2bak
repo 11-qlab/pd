@@ -1,0 +1,140 @@
+"""Flywheel audit rule.
+
+Three-state literature assessment for a discovered expression:
+
+    WITNESS       verdict in KNOWN_VERDICTS, OR title-phrase match.
+                  -> accept with high confidence
+    INCONCLUSIVE  ANALOGOUS_ONLY or NOT_FOUND_IN_INDEX with any
+                  source failures. Literature could not be queried
+                  cleanly, so absence-of-evidence is not evidence.
+                  -> accept with medium confidence
+    CONTRADICTS   NOT_FOUND_IN_INDEX with all sources healthy.
+                  Every source was queried and none returned anything
+                  relevant. This is a real signal of novelty/mismatch.
+                  -> reject (or require manual review)
+
+The rule above is the *literature* half. The full audit combines it
+with symbolic checks:
+
+    accept_discovery(expr) :=
+        node_count(expr) <= 8
+        AND consistency_error(expr) <= tol
+        AND lit_assessment(expr).state != CONTRADICTS
+
+Callers get an AuditResult they can log or route to manual review.
+"""
+from __future__ import annotations
+from dataclasses import dataclass, field
+from enum import Enum
+
+from purediscover.litcheck_named import assess_law
+
+
+class LitState(str, Enum):
+    WITNESS = "WITNESS"
+    INCONCLUSIVE = "INCONCLUSIVE"
+    CONTRADICTS = "CONTRADICTS"
+
+
+@dataclass
+class AuditResult:
+    state: LitState
+    verdict: str
+    confidence: str
+    promoted: bool
+    strategy: str
+    witness_title: str | None
+    sources_ok: list[str]
+    sources_failed: list[str]
+    notes: str = ""
+
+    @property
+    def accept_lit(self) -> bool:
+        return self.state != LitState.CONTRADICTS
+
+
+def _classify(a: dict) -> LitState:
+    if a["known"]:
+        return LitState.WITNESS
+    # known == False: verdict is ANALOGOUS_ONLY or NOT_FOUND_IN_INDEX
+    if a["verdict"] == "NOT_FOUND_IN_INDEX" and not a["sources_failed"]:
+        return LitState.CONTRADICTS
+    return LitState.INCONCLUSIVE
+
+
+def assess_literature(law_name: str, limit_per_source: int = 3,
+                      ledger_path: str = "litcheck_ledger.jsonl") -> AuditResult:
+    """Return three-state literature assessment for one law."""
+    a = assess_law(law_name, limit_per_source=limit_per_source,
+                   ledger_path=ledger_path)
+    state = _classify(a)
+    notes = []
+    if state == LitState.INCONCLUSIVE:
+        if a["sources_failed"]:
+            notes.append(f"sources_failed={a['sources_failed']}")
+        if a["verdict"] == "ANALOGOUS_ONLY":
+            notes.append("analogous_only")
+    if state == LitState.CONTRADICTS:
+        notes.append("all_sources_healthy_no_match")
+    return AuditResult(
+        state=state,
+        verdict=a["verdict"],
+        confidence=a["confidence"],
+        promoted=a["promoted"],
+        strategy=a["strategy"],
+        witness_title=a["witness_title"],
+        sources_ok=a["sources_ok"],
+        sources_failed=a["sources_failed"],
+        notes="; ".join(notes),
+    )
+
+
+@dataclass
+class FullAuditResult:
+    accept: bool
+    lit: AuditResult
+    node_count: int
+    consistency_error: float
+    max_nodes: int = 8
+    tol: float = 0.02
+    reasons: list[str] = field(default_factory=list)
+
+
+def audit_discovery(law_name: str, node_count: int,
+                    consistency_error: float,
+                    max_nodes: int = 8, tol: float = 0.02,
+                    limit_per_source: int = 3,
+                    ledger_path: str = "litcheck_ledger.jsonl") -> FullAuditResult:
+    """Full audit combining node count, consistency, and literature."""
+    reasons = []
+    ok = True
+
+    if node_count > max_nodes:
+        ok = False
+        reasons.append(f"node_count={node_count} > {max_nodes}")
+
+    if consistency_error > tol:
+        ok = False
+        reasons.append(f"consistency={consistency_error:.4f} > {tol}")
+
+    lit = assess_literature(law_name, limit_per_source=limit_per_source,
+                            ledger_path=ledger_path)
+
+    if lit.state == LitState.CONTRADICTS:
+        ok = False
+        reasons.append("lit_contradicts")
+
+    if ok:
+        reasons.append(f"lit_{lit.state.value.lower()}")
+
+    return FullAuditResult(
+        accept=ok, lit=lit, node_count=node_count,
+        consistency_error=consistency_error,
+        max_nodes=max_nodes, tol=tol, reasons=reasons,
+    )
+
+
+__all__ = [
+    "LitState", "AuditResult", "FullAuditResult",
+    "assess_literature", "audit_discovery",
+]

@@ -1,0 +1,30 @@
+| ohm | closed_loop_boed | skip | 0 | 0 | 0.0s |
+| newton_2 | single_shot | ✓ | 0 | 15 | 7.9s |
+| newton_2 | random_growth | ✓ | 0 | 5 | 2.8s |
+| newton_2 | closed_loop_boed | skip | 0 | 0 | 0.0s |
+| kinetic_energy | single_shot | ✓ | 0 | 15 | 7.5s |
+| kinetic_energy | random_growth | ✓ | 0 | 5 | 2.7s |
+| kinetic_energy | closed_loop_boed | skip | 0 | 0 | 0.0s |
+| arrhenius | single_shot | ✓ | 0 | 15 | 5.2s |
+| arrhenius | random_growth | ✓ | 0 | 5 | 4.7s |
+| arrhenius | closed_loop_boed | ✓ | 0 | 5 | 5.2s |
+| offset_inverse | single_shot | ✓ | 0 | 15 | 10.8s |
+| offset_inverse | random_growth | ✓ | 0 | 5 | 4.2s |
+| offset_inverse | closed_loop_boed | ✓ | 0 | 5 | 9.8s |
+| gravitational | single_shot | ✗ | 0 | 15 | 21.0s |
+| gravitational | random_growth | ✓ | 0 | 5 | 8.4s |
+| gravitational | closed_loop_boed | skip | 0 | 0 | 0.0s |
+| coulomb | single_shot | ✗ | 0 | 15 | 21.1s |
+| coulomb | random_growth | ✓ | 0 | 5 | 9.2s |
+| coulomb | closed_loop_boed | skip | 0 | 0 | 0.0s |
+| yukawa_potential | single_shot | ✗ | 0 | 15 | 12.1s |
+| yukawa_potential | random_growth | ✗ | 10 | 15 | 86.9s |
+| yukawa_potential | closed_loop_boed | skip | 0 | 0 | 0.0s |
+| newton_1pn | single_shot | ✗ | 0 | 15 | 6.1s |
+| newton_1pn | random_growth | ✓ | 1 | 6 | 8.4s |
+| newton_1pn | closed_loop_boed | ✓ | 0 | 5 | 4.0s |
+| newton_short_distance | single_shot | ✓ | 0 | 15 | 6.3s |
+| newton_short_distance | random_growth | ✓ | 0 | 5 | 5.8s |
+| newton_short_distance | closed_loop_boed | ✓ | 0 | 5 | 8.9s |
+
+  wrote paper/benchmark_full_v6.json

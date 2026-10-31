@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.so
+
+# Benchmark artifacts (regenerable)
+snapshots/
+datasets/known/*.json
+datasets/run_log.jsonl
+benchmark_*.json
+!paper/benchmark_full_v9.json
+datasets/input/*.csv
+
+# Editor
+.vscode/
+.idea/
+*.swp
