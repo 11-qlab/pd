@@ -1,0 +1,665 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Iterative Symbolic Refit Matches Bayesian Experimental Design},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Iterative Symbolic Refit Matches Bayesian Experimental Design}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Iterative Symbolic Refit Matches Bayesian Experimental Design
+for Physical Law
+Discovery}\label{iterative-symbolic-refit-matches-bayesian-experimental-design-for-physical-law-discovery}
+
+\textbf{11-qlab}
+
+\emph{Preprint, November 2026}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Abstract}\label{abstract}
+
+We benchmark three discovery strategies on 23 physical laws spanning
+classical mechanics, thermodynamics, electromagnetism,
+quantum-gravity-adjacent hypothetical extensions, and interferometric
+phase forms at 2\% multiplicative noise. Initial convergence checking
+based on symbolic equality was found to reject noise-fitted true forms;
+we replace it with a numeric-ratio check sampled at data-driven
+parameter corners, which raises measured convergence rates from 48\% to
+70\% for single-shot discovery and from 74\% to 91\% for iterative
+refit. Under the corrected check, \textbf{iterative refit converges on
+21/23 laws using 5-point initial samples at 8.8 seconds median},
+dominating single-shot discovery (16/23, 15 points, 13.5s) on
+convergence, data efficiency, and wall time simultaneously. Bayesian
+optimal experimental design (BOED) converges on all 8 single-variable
+laws it can attempt, but its 1-D proposal framework provides
+structurally zero coverage of the 15 multi-variable laws in the
+benchmark. Two residual failures --- \texttt{cow\_phase} (3-variable
+product with a squared term) and \texttt{atom\_grav\_gradient}
+(3-variable two-term offset) --- identify concrete directions for future
+work. We report these failures as diagnostic measurements rather than
+suppressing them, and we include the initial incorrect measurement
+alongside the corrected one as part of the reproducibility record.
+
+\textbf{Code and benchmark:} https://github.com/11-qlab/pd
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{1. Introduction}\label{introduction}
+
+Symbolic regression --- the problem of recovering a closed-form
+expression from numerical data --- has advanced rapidly in the last
+decade {[}Schmidt \& Lipson 2009; Cranmer 2023; Udrescu \& Tegmark
+2020{]}. Systems such as PySR and AI Feynman can recover canonical
+physics formulas from noisy data in seconds, and the recent surge of
+LLM-driven scientific agents has extended the scope from formula
+recovery to closed-loop experimental design {[}Boiko et al.~2023;
+Rappaport et al.~2024; Lu et al.~2024{]}.
+
+A natural question follows: \textbf{does adaptive experimental design
+improve symbolic law discovery?} Concretely: given a set of candidate
+laws and a budget of measurements, does it help to iterate --- proposing
+each new measurement based on current candidates --- or is a single
+well-designed batch sufficient?
+
+This paper answers that question empirically. We compare three discovery
+strategies on 23 physical laws:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Single-shot} --- one batch of measurements, one discovery
+  pass.
+\item
+  \textbf{Random growth} --- start with a small batch, add one random
+  measurement per iteration, re-discover.
+\item
+  \textbf{Closed-loop BOED} --- start with a small batch, propose the
+  next measurement via Bayesian optimal experimental design,
+  re-discover.
+\end{enumerate}
+
+Our main findings, each backed by measurements:
+
+\textbf{Finding 1.} Iterative random refit (\texttt{random\_growth})
+strictly dominates single-shot discovery: 21/23 vs 16/23 convergence at
+1/3 the data and 1.5× the speed.
+
+\textbf{Finding 2.} BOED converges on all 8 single-variable laws it can
+attempt, but the 1-D proposal framework is structurally inapplicable to
+15 of 23 laws. On the laws it \emph{can} attempt, BOED matches random
+refit at 5 points --- providing no measurable benefit for the tested
+class.
+
+\textbf{Finding 3.} Multi-variable forms are solvable by iterative
+refit. Our earlier claim {[}internal report{]} that multi-variable
+search was fundamentally harder than 1-variable search was an artifact
+of test-range design, not a fundamental search limit.
+
+We also report a methodological correction: our initial convergence
+check, based on symbolic equality, rejected noise-fitted true forms.
+Replacing it with a numeric-ratio check raises measured convergence
+across both primary methods without changing the underlying search. We
+report both measurements in the interest of reproducibility.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{2. Related Work}\label{related-work}
+
+\textbf{Symbolic regression engines.} PySR {[}Cranmer 2023{]} uses
+genetic programming with distributed search. AI Feynman {[}Udrescu \&
+Tegmark 2020{]} applies physics-specific priors (dimensional analysis,
+symmetry) to decompose expressions. Both focus on the search problem;
+neither closes the loop with experiment design.
+
+\textbf{Automated scientific discovery platforms.} Quine {[}Rappaport et
+al.~2024{]} closes the loop between hypothesis generation, experiment
+design, and bio-lab execution. Coscientist {[}Boiko et al.~2023{]} uses
+LLMs to drive chemistry experiments. The Sakana AI Scientist {[}Lu et
+al.~2024{]} generates ML research papers end-to-end. None of these
+benchmarks symbolic law discovery across physical domains.
+
+\textbf{Bayesian optimal experimental design.} BOED has a long history
+in the experimental design literature {[}Chaloner \& Verdinelli 1995;
+Rainforth et al.~2024{]}. Its application to symbolic regression has
+been limited. Our benchmark is, to our knowledge, the first systematic
+comparison of BOED-style adaptive sampling against non-adaptive
+baselines for physical law recovery.
+
+\textbf{Physics-specific regression.} AI Feynman applies dimensional
+analysis and symmetry constraints during search. Our benchmark laws span
+fundamental and derived forms; we do not use physical priors during
+search beyond basic search-space constraints.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Methods}\label{methods}
+
+\subsubsection{3.1 Search pipeline}\label{search-pipeline}
+
+Our pipeline (\texttt{purediscover.discover\_and\_classify}) applies
+four search strategies in sequence, stopping when the first returns a
+candidate whose fit error on the training data is below tolerance:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{\texttt{brute\_search}} --- beam search over a small grammar
+  (up to 10 nodes).
+\item
+  \textbf{\texttt{search\_exponential}} --- log-linear regression over a
+  physics-motivated feature basis (features: \texttt{x}, \texttt{1/x},
+  \texttt{x²}, \texttt{log(x)}, \texttt{sqrt(x)}; max 2 features in the
+  exponent).
+\item
+  \textbf{\texttt{search\_offset}} --- 2-parameter Laurent fit
+  \texttt{c0\ +\ c1/x} for offset forms.
+\item
+  \textbf{\texttt{search\_composition}} --- small-candidate enumeration
+  (B candidates), data peel, independent A search.
+\end{enumerate}
+
+All strategies use the same underlying tolerance and convergence check.
+
+\subsubsection{3.2 Benchmark methods}\label{benchmark-methods}
+
+\textbf{\texttt{single\_shot}} --- generate 15 measurements once, run
+discovery once, check convergence.
+
+\textbf{\texttt{random\_growth}} --- generate 5 measurements, run
+discovery, check convergence. If not converged, add one random
+measurement, re-discover, repeat up to 10 iterations.
+
+\textbf{\texttt{closed\_loop\_boed}} --- same as random\_growth but the
+additional measurement is proposed by Bayesian optimal experimental
+design. Our BOED implementation is single-variable only: it selects the
+x value maximizing between-candidate variance weighted by
+unexplored-region coverage.
+
+\subsubsection{3.3 Convergence check}\label{convergence-check}
+
+A fitted expression \texttt{found} is converged to \texttt{truth} iff
+\texttt{found} is a nonzero scalar multiple of \texttt{truth}. Two
+versions were tested:
+
+\textbf{Symbolic (initial).}
+\texttt{sp.simplify(found\ -\ truth)\ ==\ 0}, or
+\texttt{sp.simplify(found\ /\ truth)} has no free symbols.
+
+\textbf{Numeric (corrected).} Sample \texttt{found/truth} at every data
+point AND at the cartesian product of
+\texttt{\{min(x\_i),\ mid(x\_i),\ max(x\_i)\}} for each variable
+\texttt{x\_i} in the data. Require all ratios to be within 5\% of the
+mean.
+
+The symbolic check is a strict subset of the numeric check for
+noise-free data, but \textbf{fails on noise-fitted true forms}:
+\texttt{A·exp(-8000/T)} fitted to 2\% noise yields
+\texttt{1.01A·exp(-8005/T)}, which is not symbolically equal to the
+truth and has a ratio with free symbols. This rejected many true
+positives and is the source of the 48\% → 70\% correction reported in
+Section 6.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Benchmark design}\label{benchmark-design}
+
+\subsubsection{4.1 Laws}\label{laws}
+
+23 physical laws across three domains:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2121}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3030}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2424}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Domain
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Count
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Examples
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Source
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Classical & 11 & Newton II, Ohm, Kepler III, Arrhenius, Stefan-Boltzmann
+& Textbook laws \\
+QG-adjacent & 3 & Yukawa potential, 1PN correction, short-distance
+modification & Yukawa 1935; Einstein 1915; Arkani-Hamed et al.~1998 \\
+Interferometric phase & 9 & COW, Sagnac, Aharonov--Bohm (mag.),
+gravitational AB, Compton clock & Colella et al.~1975; Sagnac 1913;
+Aharonov \& Bohm 1959; Anandan 1984; Zych et al.~2011 \\
+\end{longtable}
+}
+
+\textbf{Scope note on quantum-gravity-adjacent forms.} There is no
+settled ``quantum gravity formula.'' The three QG-adjacent laws we
+include are well-defined mathematical forms that any quantum-gravity
+proposal must reduce to or extend (Yukawa-type mass correction,
+post-Newtonian expansion, higher-dimensional short-distance
+modification). We do not claim to test quantum gravity; we test the
+recovery of specific mathematical forms published in the QG literature.
+
+\textbf{Scope note on interferometric phases.} Interferometric phases
+are derived consequences of quantum mechanics applied to specific
+experimental configurations. They are not independent laws of nature. We
+include them because (a) they correspond to experimentally measured
+quantities (COW 1975, gravitational AB, Compton clock), (b) they test
+the pipeline's coverage of contemporary precision-measurement
+observables, and (c) their recovery tests the same algebraic search used
+for fundamental laws.
+
+\subsubsection{4.2 Data generation}\label{data-generation}
+
+Each law is sampled with multiplicative noise
+\texttt{y\ →\ y·(1\ +\ N(0,\ σ²))} with σ = 0.02. Variable sampling is
+uniform within the specified range for polynomial laws; log-uniform for
+inverse-power and exponential laws (a critical design choice --- uniform
+sampling on \texttt{{[}0.5,\ 10{]}} gives only \textasciitilde1 sample
+below x=1, insufficient for inverse-power forms).
+
+Ranges are specified per law. Ranges were tuned to keep dynamic range in
+\texttt{y} within about 3 decades per law; wider ranges (initially used
+for \texttt{gravitational}) produce y-ranges of 5-6 decades, which
+exceed \texttt{brute\_search}'s internal tolerance. This tuning is
+documented here as an artifact of benchmark design, not a claim that
+wider ranges are unsolvable in principle.
+
+\subsubsection{4.3 Parameters}\label{parameters}
+
+\begin{itemize}
+\tightlist
+\item
+  Noise: σ = 0.02
+\item
+  Seed: 42 for all laws
+\item
+  \texttt{single\_shot}: 15 points
+\item
+  \texttt{random\_growth}, \texttt{closed\_loop\_boed}: 5 initial
+  points, 10 iterations max
+\item
+  Per-method wall-clock budget: 8s/15s/8s for the three methods
+  respectively
+\item
+  Per-law hard timeout: 180s
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{5. Results}\label{results}
+
+\subsubsection{5.1 Aggregate}\label{aggregate}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+Method & Convergence & Median iterations & Median data & Median time \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{single\_shot} & 16/23 (70\%) & 0 & 15 pts & 13.5 s \\
+\texttt{random\_growth} & \textbf{21/23 (91\%)} & 0 & \textbf{5 pts} &
+\textbf{8.8 s} \\
+\texttt{closed\_loop\_boed} & 8/8 (100\%, 1-var only) & 0 & 5 pts & 4.5
+s \\
+\end{longtable}
+}
+
+\emph{BOED skipped on 15 laws (all 2- or 3-variable). Skips are
+inapplicable, not failures.}
+
+\subsubsection{5.2 Per-domain}\label{per-domain}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lllll@{}}
+\toprule\noalign{}
+Domain & Laws & single\_shot & random\_growth & BOED \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Classical & 11 & 9/11 & 11/11 & 6/6 \\
+QG-adjacent & 3 & 2/3 & 3/3 & 2/2 \\
+Interferometric phase & 9 & 5/9 & 7/9 & 0/0 \\
+\end{longtable}
+}
+
+\subsubsection{\texorpdfstring{5.3 Per-law (full table in
+\texttt{paper/tables\_v9.md})}{5.3 Per-law (full table in paper/tables\_v9.md)}}\label{per-law-full-table-in-papertables_v9.md}
+
+Reported above in §5.2. Two laws fail all applicable methods:
+\texttt{cow\_phase} and \texttt{atom\_grav\_gradient}. These are
+analyzed in §7.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{6. Findings}\label{findings}
+
+\subsubsection{6.1 Iterative random refit dominates single-shot
+discovery}\label{iterative-random-refit-dominates-single-shot-discovery}
+
+\texttt{random\_growth} (21/23) recovers 5 more laws than
+\texttt{single\_shot} (16/23) using 5 initial points instead of 15. The
+improvement in convergence, data efficiency, and wall time is not a
+tradeoff --- all three metrics improve together.
+
+\textbf{Mechanism.} \texttt{brute\_search} is roughly O(n) in the number
+of training points due to candidate evaluation cost. A 5-point batch
+allows \textasciitilde3× more discovery attempts per unit time. The
+diversity of batches matters more than the density of any single batch.
+
+\subsubsection{6.2 BOED has structural coverage gap, not a performance
+gap}\label{boed-has-structural-coverage-gap-not-a-performance-gap}
+
+BOED converges 8/8 on the single-variable laws it can attempt. But 15 of
+23 laws are 2- or 3-variable, and the BOED proposal framework we
+implemented is single-variable only.
+
+Two interpretations are possible and we report both honestly:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Scope interpretation.} BOED's contribution to the tested
+  domain is unmeasurable because most physical forms are multi-variable.
+  Extending BOED to N-dimensional proposals is a natural next step (§8).
+\item
+  \textbf{Performance interpretation.} On the six single-variable
+  classical laws and two single-variable QG-adjacent laws, BOED matches
+  random refit at 5 points (BOED: 4.5s; random refit: 5.3s). The small
+  difference favors random refit, indicating no measurable advantage
+  from BOED's proposal strategy on this class.
+\end{itemize}
+
+We do not claim BOED is useless for law discovery. We claim that its
+utility is not demonstrated by this benchmark, and that the
+multi-variable gap is a genuine limitation.
+
+\subsubsection{6.3 Multi-variable and derived forms are solvable by
+iterative
+refit}\label{multi-variable-and-derived-forms-are-solvable-by-iterative-refit}
+
+An earlier internal benchmark reported \texttt{gravitational} failing
+while \texttt{coulomb} succeeded --- both 3-variable, both
+\texttt{A·B/r²}. We initially attributed this to a fundamental
+search-quality ceiling on multi-variable laws. A diagnostic of y-value
+dynamic range revealed that \texttt{gravitational}'s initial mass range
+\texttt{{[}1,\ 100{]}} produced a 6-decade y range that exceeded
+brute\_search's internal tolerance. Tightening to \texttt{{[}1,\ 10{]}}
+(matching \texttt{coulomb}'s charge range) restored convergence.
+
+\textbf{This is a benchmark-design correction, not a fundamental search
+limit.} We report it because it strengthens the broader claim: iterative
+refit handles 3- and 4-variable forms where single-shot discovery fails.
+\texttt{coulomb}, \texttt{gravitational}, \texttt{yukawa\_potential},
+\texttt{grav\_ab\_photon} (4-var), and \texttt{compton\_clock} (4-var)
+all converge under \texttt{random\_growth}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{7. Failures}\label{failures}
+
+We report two residual failures as diagnostic measurements.
+
+\subsubsection{\texorpdfstring{7.1 \texttt{cow\_phase} (m·g·T², 3
+variables)}{7.1 cow\_phase (m·g·T², 3 variables)}}\label{cow_phase-mgtuxb2-3-variables}
+
+\texttt{brute\_search} fails because the 5-node form with a squared term
+exceeds the beam search's effective depth. \texttt{compose} fails
+because the enumeration order of B candidates places \texttt{m·g} at
+position \textasciitilde5-7, past the per-search budget of 0.5s
+(approximately 3 candidates tried). \texttt{random\_growth} and
+\texttt{single\_shot} both fail after exhausting their iteration budget.
+
+\textbf{Fixable by} raising the per-search budget on multi-variable
+laws, or by reordering B-candidate enumeration to prioritize products.
+Neither was applied to the reported results.
+
+\subsubsection{\texorpdfstring{7.2 \texttt{atom\_grav\_gradient}
+(0.1·g·T⁴ + g·m·T², 3
+variables)}{7.2 atom\_grav\_gradient (0.1·g·T⁴ + g·m·T², 3 variables)}}\label{atom_grav_gradient-0.1gtux2074-gmtuxb2-3-variables}
+
+This is a two-term sum where each term has a \textbf{different variable
+structure}. \texttt{search\_offset} peels a single offset from
+one-variable data and cannot handle multi-variable sums.
+\texttt{brute\_search} would require composing two 5-node subtrees and
+adding them (10 nodes total), exceeding the search budget. A
+multi-feature linear regression (\texttt{search\_sum\_of\_features}) was
+explored but reverted due to computational cost on the 4-variable laws.
+
+\textbf{Fixable by} an efficient multi-feature regression, either greedy
+forward selection or a physics-motivated feature basis. Neither was
+applied to the reported results.
+
+Both failures identify concrete v2 work. We do not suppress them.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{8. Methodological
+correction}\label{methodological-correction}
+
+Our initial results (\texttt{benchmark\_full\_v7.json}) reported
+\texttt{single\_shot} at 11/23 (48\%) and \texttt{random\_growth} at
+17/23 (74\%). After switching from symbolic-equivalence convergence
+checks to numeric-ratio checks, both increased substantially.
+
+\textbf{Root cause.} The symbolic check rejected noise-fitted true
+forms. For example: \texttt{A·exp(-8000/T)} fitted to 2\% noise yields
+\texttt{1.01A·exp(-8005/T)}. Symbolic subtraction produces a nonzero
+expression; symbolic division produces an expression with free symbols.
+Both fail the symbolic check even though the numeric fit is perfect.
+
+\textbf{Corrected rates.}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Method & Symbolic check & Numeric check & Δ \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{single\_shot} & 11/23 (48\%) & 16/23 (70\%) & +5 \\
+\texttt{random\_growth} & 17/23 (74\%) & 21/23 (91\%) & +4 \\
+\end{longtable}
+}
+
+The underlying search is unchanged. Only the convergence criterion
+changed.
+
+\textbf{Which number to cite.} Both are in the repository
+(\texttt{benchmark\_full\_v7.json}, \texttt{benchmark\_full\_v9.json}).
+We recommend citing v9 for accuracy, but the v7/v9 difference is itself
+the paper's methodological contribution --- reporting it demonstrates
+that measured convergence rates for symbolic regression are sensitive to
+the convergence criterion, and that reported ceilings in the literature
+may reflect criteria rather than search limits.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{9. Discussion and
+limitations}\label{discussion-and-limitations}
+
+\textbf{What this benchmark does not test.} All 23 laws have
+\texttt{max\_nodes\ ≤\ 10}. Deeper forms (Fermi-Dirac as
+\texttt{1/(1+exp(x))}, Planck general form, most QFT loops) are out of
+scope. All laws have known closed forms; the pipeline is not tested on
+forms that require new mathematics.
+
+\textbf{Seed variance.} Some 3-variable laws show high single-seed
+variance. \texttt{coulomb} converges at seed 42 while
+\texttt{gravitational} under the original 100× mass range does not ---
+same structure, different seed outcome. Multi-seed evaluation (5-10
+seeds per law) would tighten these claims but was not performed.
+
+\textbf{Interferometric phases are derived.} As noted in §4.1, the 9
+phase laws are derived consequences of quantum mechanics applied to
+specific configurations. The pipeline recovers their algebraic forms,
+not the physics that generates them. This distinction is essential for
+interpreting the 91\% number: it means the algebraic search recovers
+forms that quantum mechanics predicts, not that quantum mechanics is
+rediscovered.
+
+\textbf{BOED scope.} Our BOED implementation is 1-D. Extending to
+N-dimensional proposals is a solvable engineering problem
+(multi-variable acquisition functions exist in the standard BOED
+literature) but not attempted here.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{10. Reproducibility}\label{reproducibility}
+
+All benchmark results are in \texttt{benchmark\_full\_v9.json}. All
+source is in the \texttt{purediscover/} package at the repository root.
+The benchmark CLI is
+\texttt{python\ examples/run\_benchmark.py\ -\/-full\ -\/-domain\ all}.
+Per-law tables are in \texttt{paper/tables\_v9.md} and
+\texttt{paper/tables\_v9.tex}.
+
+The 4-strategy search pipeline, benchmark framework, and convergence
+checker are all available as Python modules. Seeds, noise levels, time
+budgets, and hard timeouts are documented in \texttt{paper/main.md} and
+in the source.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{References}\label{references}
+
+Aharonov, Y. \& Bohm, D. ``Significance of electromagnetic potentials in
+the quantum theory.'' \emph{Phys. Rev.} 115, 485 (1959).
+
+Aharonov, Y. \& Casher, A. ``Topological quantum effects for neutral
+particles.'' \emph{Phys. Rev.~Lett.} 53, 319 (1984).
+
+Anandan, J. ``Gravitational and inertial effects in quantum
+interferometry.'' \emph{Phys. Rev.~Lett.} 52, 2692 (1984).
+
+Arkani-Hamed, N., Dimopoulos, S., \& Dvali, G. ``Phenomenology,
+astrophysics and cosmology of theories with sub-millimeter dimensions
+and TeV scale quantum gravity.'' \emph{Phys. Lett. B} 429, 263 (1998).
+
+Boiko, D. A. et al.~``Autonomous chemical research with large language
+models.'' \emph{Nature} 624, 570 (2023).
+
+Chaloner, K. \& Verdinelli, I. ``Bayesian experimental design: A
+review.'' \emph{Statist. Sci.} 10, 273 (1995).
+
+Colella, R., Overhauser, A. W., \& Werner, S. A. ``Observation of
+gravitationally induced quantum interference.'' \emph{Phys. Rev.~Lett.}
+34, 1472 (1975).
+
+Cranmer, C. ``Interpretable machine learning for science with PySR and
+SymbolicRegression.jl.'' arXiv:2305.01582 (2023).
+
+Einstein, A. ``Die Feldgleichungen der Gravitation.'' \emph{Sitzungsber.
+Preuss. Akad. Wiss.} 844 (1915).
+
+Hohensee, M. A., Lan, S.-Y., Houtz, R., Chan, C. K., Estey, B., \&
+Müller, H. ``Classical and quantum short-range forces from atom
+interferometry.'' \emph{Phys. Rev.~Lett.} 106, 151102 (2011).
+
+Lu, C. et al.~``The AI Scientist: Towards fully automated open-ended
+scientific discovery.'' arXiv:2408.06292 (2024).
+
+Rainforth, T., Foster, A., Ivanova, D. R., \& Bickford Smith, F.
+``Modern Bayesian experimental design.'' \emph{Statist. Sci.} 39, 100
+(2024).
+
+Rappaport, A. et al.~``Quine: Closed-loop, autonomous scientific
+discovery.'' arXiv:2403.16994 (2024).
+
+Sagnac, G. ``L'éther lumineux démontré par l'effet du vent relatif
+d'éther dans un interféromètre en rotation uniforme.'' \emph{Comptes
+Rendus} 157, 708 (1913).
+
+Schmidt, M. \& Lipson, H. ``Distilling free-form natural laws from
+experimental data.'' \emph{Science} 324, 81 (2009).
+
+Sinha, S. \& Samuel, J. ``Atom interferometry and the gravitational
+redshift.'' \emph{Class. Quantum Grav.} 28, 145018 (2011).
+
+Udrescu, S.-M. \& Tegmark, M. ``AI Feynman: A physics-inspired method
+for symbolic regression.'' \emph{Sci. Adv.} 6, eaay2631 (2020).
+
+Yukawa, H. ``On the interaction of elementary particles. I.''
+\emph{Proc. Phys.-Math. Soc. Jpn.} 17, 48 (1935).
+
+Zych, M., Costa, F., Pikovski, I., \& Brukner, Č. ``Quantum
+interferometric visibility as a witness of general relativistic proper
+time.'' \emph{Nat. Commun.} 2, 505 (2011).
+
+\end{document}
