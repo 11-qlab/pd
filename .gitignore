@@ -18,3 +18,11 @@ datasets/input/*.csv
 .vscode/
 .idea/
 *.swp
+
+# Post-initial cleanup
+*.bak
+litcheck_ledger.jsonl
+purediscover_assess_ledger.jsonl
+purediscover_assess_ledger.jsonl.archive
+experiment.csv
+experiment_novel.csv
