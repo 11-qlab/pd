@@ -264,3 +264,80 @@ pipeline now makes them automatically from the Jacobian.
 - Automatic template invention (novelty.py handles harmonics only)
 - Automatic observable invention (candidates are human-supplied)
 - Prior estimation from data (priors are human-assigned)
+
+
+---
+
+## Testing at multiple fidelity tiers (quantum)
+
+`scripts/test_qiskit_real.py` runs three tiers against the ZZ Hamiltonian:
+
+| Tier | Setup | Result |
+|---|---|---|
+| 1 | Qiskit statevector (exact) | Z1 matches numpy to 0.0 (identical) |
+| 2 | Aer + 1024 shots (Born-rule sampling) | max diff 0.054, 1.74σ |
+| 3 | Recover (J,h) from 4096-shot expectation traces | J, h to 2e-4 rel err |
+
+Tier 3 accuracy is not a hardware claim: Aer-with-shots has zero decoherence,
+only binomial measurement noise. Real NISQ adds T1/T2 and gate errors; expect
+15-30% parameter recovery error on hardware, not 2e-4.
+
+### A bug that only the shot tier exposed
+
+Tier 1 (statevector) passed with zero error while Tier 2 was 32σ off — a
+systematic, not noise. Root cause: Qiskit measures qubit 0 (LSB) but numpy's
+"Z1" observable is Z on the first kron factor (= qubit 1). The statevector
+check never exercises the measurement circuit, so the mismatch was invisible
+until shot-based sampling was used. Fixed by measuring qubit 1 for Z1/X1.
+General lesson: exact-evolution tests can verify a unitary's math and miss
+its measurement wiring entirely; only tier-2 (shots) exposes it.
+
+
+---
+
+## Real IBM Quantum hardware — two backends
+
+`scripts/test_ibm_hardware.py` submitted the same 8-circuit suite to two
+physical IBM devices. Same pipeline, same circuits, independent hardware.
+
+| | ibm_marrakesh | ibm_fez |
+|---|---|---|
+| Job ID | dbjmhlhffo6c73b9u9bg | dbjndnd6p51s73cl4dh0 |
+| Queue | 52 min | 17 s |
+| QPU | 7 s | 6 s |
+| J_hat | 0.7019 (0.3% err) | 0.7082 (1.2% err) |
+| h_hat | 0.3454 (13.6% err) | 0.3489 (12.8% err) |
+| sanity_00 counts | {0: 2048} | {0: 2032, 1: 16} |
+| sanity_p0 counts | {1: 1038, 0: 1010} | {1: 1043, 0: 1005} |
+
+### What the two-run consistency shows
+
+- J is recovered to ~1% on both devices. Independent hardware, independent
+  calibrations, consistent answer.
+- h is recovered ~13% low on both. This is systematic, not shot noise:
+  the Z1 trace is depressed on hardware (Trotter + gate error), and the fit
+  compensates by lowering h.
+- ibm_fez shows 0.78% readout error on a prepared |0> (16/2048 bit-flips);
+  ibm_marrakesh showed clean 2048/0. Both are consistent with real hardware;
+  fez had slightly less calibrated readout at submission time.
+
+### Honest claim
+
+The pipeline runs end-to-end on two different IBM Quantum devices and
+recovers Hamiltonian parameters to NISQ accuracy:
+
+- J to ~1% on both backends
+- h to ~13% on both backends, systematic (Trotter/gate error, not noise)
+
+Not claimed: reproducible sub-percent precision; quantum advantage; physics
+discovery. This is a portability and correctness result — the pipeline is
+functional on real quantum hardware and its systematic error modes are
+identifiable.
+
+### A test bug caught by both runs
+
+`sanity_p0` was originally thresholded at 0.25 < <Z1>|+0> < 0.75, treating
+<Z1>|+0> as +0.5. That is wrong: |+> measured in Z basis gives 0. The
+pipeline was correct; the human threshold was not. Both hardware runs show
+<Z1>|+0> ~ 0 (from 1038/1010 and 1043/1005 splits), which is a clean
+Hadamard, not a failure.
