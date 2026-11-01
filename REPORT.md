@@ -215,3 +215,52 @@ held-out brentq predictions match the Colebrook oracle to 4e-10 regardless.
 This is the same lesson as the fixed-point module: predicting y at new x
 does not require identifying the gauge; only coefficients that enter the
 observable are identifiable.
+
+
+---
+
+## Expanded templates / libraries / candidate sets
+
+The previous restricted closings relied on minimal frames (2 templates,
+12 primitives, 6 observables). Expanded to real-physics coverage:
+
+| Module | Content |
+|---|---|
+| `physics_templates.py` | 14 laws across fluid dynamics, thermo, adsorption, enzyme, electrochem |
+| `grammar_library.py` | 33 primitives with MDL priors; common ops 2.74 bits/node, rare 8.97 bits/node |
+| `quantum_observables.py` | 21 candidates: single Paulis, 2q correlators, Bell projectors, parity |
+
+### What this widens
+
+The pipeline can fit or rank correctly across a wider physics surface without
+the human re-supplying a template each time. Colebrook, Langmuir,
+Michaelis-Menten, Butler-Volmer, and Bell-state observables are now available.
+
+### What this does NOT prove
+
+The frame is still human-supplied. If a law is not in the template library,
+the pipeline fits the closest wrong template and returns a plausible-looking
+answer. `check_all_templates_fail()` is the guard: it flags templates whose
+best fit has RSS > 5% of data variance, signalling the true law may be
+outside the library, but this is a heuristic, not proof of novelty.
+
+Also, the information floor: with a 14-template library and a 21-observable
+set, more data is required to rank correctly. Expanding the library helps
+only when you have the data to justify the expanded search.
+
+### A specific autonomy win (quantum)
+
+The XX correlator is rejected for the ZZ Hamiltonian with cond=inf, not
+because of numerical noise but because XX commutes with every term of H:
+<XX>(t) is constant, carrying zero information about J or h. The pipeline
+autonomously recognizes a symmetry-charge observable as informationally
+null. Z1 is a weaker case: <Z1>(t) depends on J but not h, so it is
+rank-deficient rather than null. Both calls - do not measure a conserved
+quantity to learn the Hamiltonian - are what a physicist would make; the
+pipeline now makes them automatically from the Jacobian.
+
+### What remains research-scope
+
+- Automatic template invention (novelty.py handles harmonics only)
+- Automatic observable invention (candidates are human-supplied)
+- Prior estimation from data (priors are human-assigned)
