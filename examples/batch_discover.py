@@ -31,7 +31,7 @@ INPUT_DIR = pathlib.Path("datasets/input")
 KNOWN_DIR = pathlib.Path("datasets/known")
 RUN_LOG   = pathlib.Path("datasets/run_log.jsonl")
 
-TARGET_CANDIDATES = ["y", "target", "output", "P", "V", "N", "k"]
+TARGET_CANDIDATES = ["y", "target", "output", "P", "V", "N", "k", "dp", "B_nu"]
 MATCH_TOLERANCE   = 0.05
 
 
@@ -176,6 +176,7 @@ def process_csv(csv_path: pathlib.Path, known: dict) -> dict:
             corpus=REGISTRY + stored_laws,
             time_budget_direct=30,
             time_budget_compose=90,
+            tol=0.05,   # 2-3% measurement noise
         )
     except Exception as e:
         return {"csv": csv_path.name, "status": "discovery_error",
@@ -211,15 +212,28 @@ def process_csv(csv_path: pathlib.Path, known: dict) -> dict:
         })
 
     if not novel_entries:
-        # No new laws; still update mtime so this file stops re-running
+        # No new laws. Save marker (with updated mtime) so we skip
+        # this file on the next run instead of re-running discovery.
         if prev:
             prev["source_mtime"] = mtime
             save_known(stem, prev)
             return {"csv": csv_path.name, "status": "no_new",
                     "n_novel": 0,
                     "note": f"nothing new; {len(existing)} law(s) kept"}
+        # No previous entry — save empty marker so next run skips
+        marker = {
+            "source_csv": csv_path.name,
+            "source_mtime": mtime,
+            "n_rows": len(data),
+            "variables": var_names,
+            "target": target,
+            "n_discovered": 0,
+            "discovered": [],
+        }
+        save_known(stem, marker)
         return {"csv": csv_path.name, "status": "no_new",
-                "n_novel": 0, "note": ""}
+                "n_novel": 0,
+                "note": "no NOVEL; cached for skip"}
 
     merged = existing + novel_entries
     record = {

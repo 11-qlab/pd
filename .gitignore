@@ -1,28 +1,35 @@
+# --- data / downloads ---
+datasets/
+results/
+*.csv
+*.csv.gz
+*.zip
+*.zip?*
+*.zip?download=*
+*.tar.gz
+*.xlsx
+*.h5
+*.hdf5
+*.root
+
+# --- python ---
 __pycache__/
 *.py[cod]
 *.egg-info/
-.pytest_cache/
 .venv/
 venv/
-*.so
+.pytest_cache/
+.mypy_cache/
 
-# Benchmark artifacts (regenerable)
-snapshots/
-datasets/known/*.json
-datasets/run_log.jsonl
-benchmark_*.json
-!paper/benchmark_full_v9.json
-datasets/input/*.csv
-
-# Editor
-.vscode/
-.idea/
-*.swp
-
-# Post-initial cleanup
+# --- logs / ledgers / artifacts ---
+*.log
+*.tmp
 *.bak
 litcheck_ledger.jsonl
 purediscover_assess_ledger.jsonl
-purediscover_assess_ledger.jsonl.archive
-experiment.csv
-experiment_novel.csv
+purediscover_assess_ledger.jsonl.*
+snapshots/
+
+# --- benchmark output (regenerable) ---
+benchmark_*.json
+paper/benchmark_*.json

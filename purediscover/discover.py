@@ -240,6 +240,72 @@ def _physical_score(expr) -> int:
     return score
 
 
+def _try_extend_polynomial(expr, data, var_names, tol: float = 0.02):
+    """If expr is a single-term power (c·x^n), try adding c·x^m for m > n.
+
+    Handles partial fits where brute_search found the leading term of
+    a multi-term polynomial. Example: on data from 4.2·T² + 0.08·T³,
+    brute_search returns 4.28·T². This function adds the missing
+    0.08·T³ term by fitting the residual.
+    """
+    if len(var_names) != 1:
+        return None
+    try:
+        import numpy as np
+    except ImportError:
+        return None
+
+    v = var_names[0]
+    x = sp.Symbol(v)
+
+    residuals = []
+    for env, y in data:
+        try:
+            y_pred = float(expr.subs({x: env[v]}))
+        except Exception:
+            return None
+        if not np.isfinite(y_pred):
+            return None
+        residuals.append((env, y - y_pred))
+
+    # Detect original power so we try only HIGHER powers (T³, T⁴, T⁵)
+    # Trying lower/same powers re-fits the leading term and gives a
+    # bad candidate like 4.28·T² + 0.1·T² = 4.38·T² (wrong structure).
+    orig_power = 1
+    for atom in expr.atoms(sp.Pow):
+        if len(atom.args) == 2 and atom.args[0] == x:
+            try:
+                p_val = float(atom.args[1])
+                if p_val == int(p_val) and p_val > 0:
+                    orig_power = max(orig_power, int(p_val))
+            except Exception:
+                pass
+    if expr == x:
+        orig_power = 1
+
+    for n in (2, 3, 4, 5):
+        if n <= orig_power:
+            continue
+        num, den = 0.0, 0.0
+        for env, r in residuals:
+            xn = env[v] ** n
+            if not np.isfinite(xn):
+                continue
+            num += r * xn
+            den += xn * xn
+        if den < 1e-12:
+            continue
+        c = num / den
+        try:
+            candidate = expr + sp.Float(c) * x**n
+            fe = _fit_error(candidate, data)
+        except Exception:
+            continue
+        if fe <= tol:
+            return candidate
+    return None
+
+
 def discover_and_classify(
     data, var_names, *,
     grammar_ops=DEFAULT_OPS,
@@ -323,6 +389,22 @@ def discover_and_classify(
             e = _denormalize(r["expr"], y_scale)
             if _fit_error(e, data) <= tol:
                 candidates.append(e)
+
+    # 2b. extend polynomial candidates with one extra term.
+    # REPLACE original with extension when extension improves fit —
+    # otherwise the original (fewer nodes) wins in ranking and the
+    # extended form is never seen.
+    extended = []
+    keep = []
+    for expr in candidates:
+        ext = _try_extend_polynomial(expr, data, var_names, tol)
+        if ext is not None:
+            extended.append(ext)
+            # Drop original from candidates; the extended version
+            # supersedes it (better fit, complete form)
+        else:
+            keep.append(expr)
+    candidates = keep + extended
 
     # 3. classify + rank
     seen: set[str] = set()

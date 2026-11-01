@@ -298,7 +298,9 @@ def search_composition(
     return results
 
 
-__all__ = ["search_composition", "_enumerate_b", "_count_nodes"]
+__all__ = ["search_composition", "_enumerate_b", "_count_nodes",
+    "search_power_law",
+]
 
 # --- Offset peel (y = A(x) + B) -----------------------------------------
 #
@@ -511,4 +513,69 @@ __all__ = [name for name in globals() if not name.startswith("_")] + [
 # applies strict checks regardless of what the wrapped version does.
 # =========================================================================
 
+# --- Power-law fit: log-linear regression for arbitrary coefficients ---
+#
+# Complements search_offset for the case B = 0 (pure A·x^k). Grammar-based
+# search cannot represent arbitrary float coefficients like ħ/2 ≈ 5.27e-35
+# because the grammar constants are integers or simple powers. Log-linear
+# regression fits A and k directly as floats, catching:
+#
+#     Heisenberg:      dp = ħ/(2·dx)      → A ≈ 5.27e-35, k = -1
+#     Stefan-Boltzmann: J = σ·T⁴          → A = σ, k = 4
+#     Kepler III:      P = a^(3/2)        → A = 1, k = 1.5
+#     Coulomb:         F = k·q1·q2/r²     → multi-var, coefficients per var
+#
+# Returns [] if fit error exceeds tol. For exponential laws (Arrhenius),
+# log-fit fails because log(y) is not linear in log(x).
+
+def search_power_law(data, var_names, *, tol: float = 0.02):
+    """Log-linear fit for y = A·∏ x_i^k_i. Handles arbitrary float A, k."""
+    if len(data) < 3:
+        return []
+
+    # Validate positivity
+    for env, y in data:
+        if y <= 0:
+            return []
+        for v in var_names:
+            xv = env.get(v)
+            if xv is None or xv <= 0:
+                return []
+
+    try:
+        import numpy as np
+    except ImportError:
+        return []
+
+    cols = [np.log([env[v] for env, _ in data]) for v in var_names]
+    log_y = np.log([y for _, y in data])
+    X = np.column_stack([np.ones(len(data))] + cols)
+
+    try:
+        coefs, *_ = np.linalg.lstsq(X, log_y, rcond=None)
+    except Exception:
+        return []
+
+    # Check fit
+    try:
+        y_pred = np.exp(X @ coefs)
+    except Exception:
+        return []
+    y_actual = np.array([y for _, y in data])
+    err = float(np.mean(np.abs(y_pred - y_actual) / (np.abs(y_actual) + 1e-9)))
+    if err > tol:
+        return []
+
+    # Reconstruct expression
+    try:
+        log_A = float(coefs[0])
+        A = sp.Float(float(np.exp(log_A)))
+        expr = A
+        for v, k in zip(var_names, coefs[1:]):
+            expr = expr * sp.Symbol(v) ** sp.Float(float(k))
+        expr = sp.simplify(expr)
+    except Exception:
+        return []
+
+    return [{"expr": expr, "fit_error": err, "method": "power_law"}]
 
