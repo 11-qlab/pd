@@ -16,7 +16,7 @@ from purediscover_ext import discover_recursive
 def main() -> int:
     rng = np.random.default_rng(7)
     n = 100
-    t = rng.uniform(0.1, 6.0, n)
+    t = rng.uniform(0.1, 20.0, n)   # ~3 full cycles of 0.5-rad component
     y_true = np.cos(2.0 * t) + 0.5 * np.sin(0.5 * t)
     y_noisy = y_true + rng.normal(0, 0.02, n)
 
