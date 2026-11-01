@@ -56,6 +56,20 @@ TEMPLATES_2D = [
             * np.power(np.abs(xy[1]) + 1e-12, q) + c,
         lambda p, x, y: p[0]*sp.Pow(sp.Abs(x)+1e-12, p[1])
                           * sp.Pow(sp.Abs(y)+1e-12, p[2]) + p[3]),
+    # Damped Rabi: A * cos(w*x*y + phi) * exp(-y/T2)   (t is second variable)
+    _mk("damped_rabi_xy", [1.0, 2.0, 0.0, 2.0],
+        [-np.inf, 0.01, -2*np.pi, 0.05], [np.inf, 30.0, 2*np.pi, 50.0],
+        lambda xy, A, w, phi, T2:
+            A * np.cos(w * xy[0] * xy[1] + phi) * np.exp(np.clip(-xy[1] / np.maximum(T2, 0.20), -50, 50)),
+        lambda p, x, y: (p[0] * sp.cos(p[1]*x*y + p[2])
+                            * sp.exp(-y / p[3]))),
+    # Damped Rabi without phase (fewer params, often wins on MDL)
+    _mk("damped_rabi_xy_nophase", [1.0, 2.0, 2.0],
+        [-np.inf, 0.01, 0.05], [np.inf, 30.0, 50.0],
+        lambda xy, A, w, T2:
+            A * np.cos(w * xy[0] * xy[1]) * np.exp(np.clip(-xy[1] / np.maximum(T2, 0.20), -50, 50)),
+        lambda p, x, y: (p[0] * sp.cos(p[1]*x*y)
+                            * sp.exp(-y / p[2]))),
 ]
 
 
