@@ -194,17 +194,24 @@ def check_all_templates_fail(data, rss_floor_frac=0.1):
     if var_y <= 0:
         return sorted(TEMPLATES.keys())
     out = []
+    import warnings
     for name in TEMPLATES:
         spec = TEMPLATES[name]
         def res(p):
             rs = []
             for d in data:
                 inputs = {v: d["x"][i] for i, v in enumerate(spec["variables"])}
-                rs.append(evaluate_template(name, inputs, d["y"], p))
+                try:
+                    rs.append(float(evaluate_template(name, inputs, d["y"], p)))
+                except Exception:
+                    rs.append(1e10)
             return np.array(rs)
         try:
-            sol = least_squares(res, np.array(spec["default"], dtype=float),
-                                max_nfev=2000)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                with np.errstate(all="ignore"):
+                    sol = least_squares(res, np.array(spec["default"], dtype=float),
+                                        max_nfev=2000)
         except Exception:
             out.append(name)
             continue
