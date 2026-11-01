@@ -64,10 +64,18 @@ Two-arm discovery:
 ## Gaps remaining (honest)
 
 ### MDL scorer structural-vs-residual weighting
-**Mitigated, not fixed.** The core `mdl_score` weights structural bits too
-heavily vs residual encoding. Near-optimal-MAE filter compensates at the
-candidate selection layer. Fixing the scorer would invalidate every "bits"
-comparison reported here and require re-verification. Not attempted.
+**Fixed (v2).** The legacy `mdl_score` (now `_mdl_score_v1`) used
+`sum(log2(1 + r/scale))` for data bits, which grows sublinearly in
+residual improvement — a 100x fit gain buys ~1 bit for n=100, while one
+extra structural node costs ~40 bits. Effectively demands ~3000x fit
+improvement to justify one node; the near-optimal-MAE filter masked this.
+
+v2 uses the standard two-part Gaussian universal code:
+`L = n_nodes*log2(lib) + n_const*log2(range) + (n/2)*log2(2*pi*e*RSS/n)`,
+reported as gain vs a median-baseline null model (negative = compresses
+better than flat). Ranking is preserved on all tested cases: linear, cosine,
+damped Rabi, Hamiltonian (0.05% PASS), Keeling, recursive-additive.
+`PUREDISCOVER_MDL=v1` retains the legacy scorer for reproducibility.
 
 ### Previously out-of-scope gaps now closed-restricted
 
