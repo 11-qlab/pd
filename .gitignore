@@ -33,3 +33,5 @@ snapshots/
 # --- benchmark output (regenerable) ---
 benchmark_*.json
 paper/benchmark_*.json
+autonomic.md
+work.md

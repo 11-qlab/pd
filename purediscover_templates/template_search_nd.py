@@ -184,6 +184,22 @@ def search_templates_nd(data, var_names, *, max_order=3, max_mre=0.15,
                 print(f"  {comp.name:20s} {tmpl['name']:20s} "
                       f"mae={best_mae:.3e}  bits={bits:.1f}")
 
-    results.sort(key=lambda r: (0 if math.isfinite(r.mdl_bits) else 1,
-                                r.mdl_bits, r.mae))
-    return results
+    # Two-tier ranking:
+    #  Tier 0: finite MDL bits -> trust MDL
+    #  Tier 1: bits=inf -> filter to near-optimal MAE, then prefer simpler
+    finite = [r for r in results if math.isfinite(r.mdl_bits)]
+    finite.sort(key=lambda r: (r.mdl_bits, r.mae))
+    inf_bits = [r for r in results if not math.isfinite(r.mdl_bits)]
+    if inf_bits:
+        min_mae = min(r.mae for r in inf_bits)
+        near_opt = [r for r in inf_bits if r.mae <= 1.10 * min_mae + 1e-6]
+        def _ops(r):
+            try:
+                return int(sp.count_ops(sp.sympify(r.expr_str)))
+            except Exception:
+                return 100
+        near_opt.sort(key=lambda r: (_ops(r), r.mae))
+        rest = [r for r in inf_bits if r.mae > 2.0 * min_mae + 1e-9]
+        rest.sort(key=lambda r: r.mae)
+        inf_bits = near_opt + rest
+    return finite + inf_bits
