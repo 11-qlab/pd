@@ -1,13 +1,9 @@
 """Active experiment loop (restricted closing).
 
-Two changes vs naive implementation:
-1. First fit does a coarse grid search; every subsequent fit WARM-STARTS
-   from the previous (J_hat, h_hat). Without this, D-optimal times can
-   land the refit in a different aliased basin of the periodic model,
-   producing a worse fit despite more data.
-2. Test uses 2% noise on the simulated oracle so the initial 5-point fit
-   has a measurable noise floor, giving active learning something real
-   to improve. Noise-free data makes the test tautological.
+Robust initial fit (finer grid + top-K multi-start NM), then warm-start
+refits. Without multi-start, 2% noise + few initial points lets NM land in
+a wrong local minimum that warm-start never escapes. With top-K multi-start,
+initial fit converges to the correct basin and warm-start refits improve.
 
 Restricted scope: proposes times for a fixed observable; does not choose
 new observable types or physical systems.
@@ -53,17 +49,25 @@ def _loss(J, h, t, y, obs_name):
     return float(np.mean((pred - y) ** 2))
 
 
-def _fit_grid(t, y, obs_name):
-    best = (np.inf, 0.5, 0.5)
-    for J0 in np.linspace(0.05, 2.0, 15):
-        for h0 in np.linspace(0.05, 2.0, 15):
-            l = _loss(J0, h0, t, y, obs_name)
-            if l < best[0]:
-                best = (l, J0, h0)
-    res = minimize(lambda p: _loss(p[0], p[1], t, y, obs_name),
-                   [best[1], best[2]], method="Nelder-Mead",
-                   options={"xatol": 1e-9, "fatol": 1e-14, "maxiter": 3000})
-    return float(res.x[0]), float(res.x[1])
+def _fit_grid(t, y, obs_name, grid_n=25, top_k=5):
+    """Coarse grid -> pick top-K cells -> NM from each -> return best."""
+    Js = np.linspace(0.05, 2.0, grid_n)
+    hs = np.linspace(0.05, 2.0, grid_n)
+    cells = []
+    for J0 in Js:
+        for h0 in hs:
+            cells.append((_loss(J0, h0, t, y, obs_name), J0, h0))
+    cells.sort(key=lambda c: c[0])
+
+    best_loss, best_J, best_h = np.inf, 0.5, 0.5
+    for _, J0, h0 in cells[:top_k]:
+        res = minimize(lambda p: _loss(p[0], p[1], t, y, obs_name),
+                       [J0, h0], method="Nelder-Mead",
+                       options={"xatol": 1e-9, "fatol": 1e-14, "maxiter": 3000})
+        if res.fun < best_loss:
+            best_loss = float(res.fun)
+            best_J, best_h = float(res.x[0]), float(res.x[1])
+    return best_J, best_h
 
 
 def _fit_warm(J_prev, h_prev, t, y, obs_name):

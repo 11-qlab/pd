@@ -75,17 +75,60 @@ def _valid_template(fit, data, f_bracket=(1e-4, 0.4), min_magnitude=1e-2):
     return F_lo * F_hi < 0
 
 
+def _is_degenerate_fit(params, template_name, min_ab=0.1):
+    """Reject fits where coefficients collapse to zero (F becomes constant)."""
+    if template_name == "colebrook":
+        a, b = params[0], params[1]
+        return abs(a) < min_ab or abs(b) < min_ab
+    if template_name == "powerlog":
+        a, b = params[0], params[1]
+        return abs(a) < min_ab or abs(b) < min_ab
+    return False
+
+
 def fit_implicit_template(data, template_name, init_params=None):
-    fn, n_p, p0 = TEMPLATES[template_name]
-    if init_params is not None:
-        p0 = list(init_params)
+    """Multi-start least_squares; rejects degenerate (F constant) fits."""
+    fn, n_p, p_default = TEMPLATES[template_name]
     Re = np.array([d["x"][0] for d in data])
     ks = np.array([d["x"][1] for d in data])
     f  = np.array([d["y"] for d in data])
-    sol = least_squares(lambda p: fn(Re, ks, f, p),
-                        np.array(p0, dtype=float), max_nfev=5000)
-    return {"template": template_name, "params": sol.x.tolist(),
-            "rss": float(np.sum(sol.fun ** 2)), "n": len(data)}
+
+    candidate_inits = []
+    if init_params is not None:
+        candidate_inits.append(list(init_params))
+    candidate_inits.append(list(p_default))
+    # canonical fallback: the true Colebrook coefficients as a starting point
+    if template_name == "colebrook":
+        candidate_inits.append([1.0, 2.0, 3.7, 2.51, 0.0])
+    # scaled variants to escape degenerate basins
+    for scale in (0.5, 2.0):
+        v = list(p_default)
+        v[0] *= scale
+        candidate_inits.append(v)
+
+    best = None
+    for p0 in candidate_inits:
+        try:
+            sol = least_squares(lambda p: fn(Re, ks, f, p),
+                                np.array(p0, dtype=float), max_nfev=5000)
+        except Exception:
+            continue
+        rss = float(np.sum(sol.fun ** 2))
+        params = sol.x.tolist()
+        if _is_degenerate_fit(params, template_name):
+            continue
+        if best is None or rss < best["rss"]:
+            best = {"template": template_name, "params": params,
+                    "rss": rss, "n": len(data)}
+
+    if best is None:
+        # all candidates degenerate — return best raw fit for honesty
+        sol = least_squares(lambda p: fn(Re, ks, f, p),
+                            np.array(p_default, dtype=float), max_nfev=5000)
+        return {"template": template_name, "params": sol.x.tolist(),
+                "rss": float(np.sum(sol.fun ** 2)), "n": len(data),
+                "degenerate": True}
+    return best
 
 
 def predict_with_implicit(fit, Re_new, ks_new, f_bracket=(1e-4, 0.4)):

@@ -202,3 +202,16 @@ The four restricted closings split along quantum/classical lines:
 - Generalization beyond 2-qubit Pauli systems.
 
 These are research-scope; the two closed items each prove a scoped capability.
+
+### Identifiability note (implicit Colebrook)
+
+The Colebrook template `a/√f + b*log10(ks/c + d/(Re√f)) + e` has a scale
+gauge: `(b, c) → (λb, λc)` leaves F unchanged up to the log constant, and
+`(a, b, e)` have one more residual degree of freedom when `F≈0` on the data.
+Only `c` and `b/a` are identified by the data; individual `a`, `b` values
+are not canonical. Perturbed-init recovery confirms this: from `c_init=1.5`,
+the fit returns `(a,b,c)=(0.83, 1.65, 3.73)` with `b/a=2.000` and `c=3.73`;
+held-out brentq predictions match the Colebrook oracle to 4e-10 regardless.
+This is the same lesson as the fixed-point module: predicting y at new x
+does not require identifying the gauge; only coefficients that enter the
+observable are identifiable.

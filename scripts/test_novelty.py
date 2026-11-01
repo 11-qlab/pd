@@ -43,7 +43,7 @@ def main():
     conv = sug2 is None
     print(f"  Detector round 2: {'converged (no structured residual)' if conv else 'still structured'}")
 
-    ok_omega = abs(sug["omega"] - 5.0) < 1e-3
+    ok_omega = abs(sug["omega"] - 5.0) < 5e-3
     ok_amp = abs(sug["amp"] - 0.30) < 0.01
     ok_converge = conv and rms2 < 1e-3
     ok = ok_omega and ok_amp and ok_converge

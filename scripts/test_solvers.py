@@ -3,7 +3,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 from purediscover_ext.solvers import (
-    discover_implicit_law, predict_with_implicit, newton_solve, brentq_solve,
+    discover_implicit_law, predict_with_implicit, fit_implicit_template,
+    newton_solve, brentq_solve,
 )
 
 
@@ -32,13 +33,25 @@ def main():
     if result["rejected"]:
         print(f"  rejected (degenerate): {result['rejected']}")
     if not result["valid"]:
-        print("  no valid template — FAIL")
-        return 1
+        print("  no valid template — FAIL"); return 1
 
     best = result["valid"][0]
     print(f"\nChosen: {best['template']}")
-    print(f"  params: {['%.4g' % p for p in best['params']]}")
 
+    # Perturbed-init recovery: c must return to 3.7, b/a must return to 2
+    print("\n=== Perturbed-init recovery (c_init=1.5, not 3.7) ===")
+    fit_p = fit_implicit_template(data, "colebrook",
+                                  init_params=[1.0, 2.0, 1.5, 2.51, 0.0])
+    a_p, b_p, c_p = fit_p["params"][0], fit_p["params"][1], fit_p["params"][2]
+    ratio_p = b_p / a_p if a_p != 0 else float("inf")
+    print(f"  a={a_p:.4f} b={b_p:.4f} c={c_p:.4f}  (expect c→3.7, b/a→2)")
+    print(f"  c error:    {abs(c_p - 3.7) / 3.7:.3e}")
+    print(f"  ratio error: {abs(ratio_p - 2.0) / 2.0:.3e}")
+    ok_c = abs(c_p - 3.7) / 3.7 < 1e-2
+    ok_ratio = abs(ratio_p - 2.0) / 2.0 < 1e-2
+    print(f"  recovered: c={ok_c}, ratio={ok_ratio}")
+
+    # Held-out via brentq
     n_t = 50
     Re_t = 10 ** rng.uniform(4, 6, n_t)
     ks_t = 10 ** rng.uniform(-5, -2, n_t)
@@ -50,18 +63,17 @@ def main():
     print(f"\nHeld-out via brentq on F=0:")
     print(f"  valid: {n_valid}/{n_t}")
     if n_valid == 0:
-        print("  no valid predictions — FAIL")
-        return 1
+        print("  no valid predictions — FAIL"); return 1
     rel = np.abs(f_pred[mask] - f_oracle[mask]) / f_oracle[mask]
     print(f"  max rel err:  {rel.max():.3e}")
     print(f"  mean rel err: {rel.mean():.3e}")
 
     print(f"\nSolver smoke tests:")
-    print(f"  newton(x^2-4, y0=3)    = {newton_solve(lambda y: y*y-4, 3.0):.6f}  (expect 2)")
-    print(f"  brentq(x^2-4, [0,5])   = {brentq_solve(lambda y: y*y-4, 0.0, 5.0):.6f}  (expect 2)")
+    print(f"  newton(x^2-4, y0=3)    = {newton_solve(lambda y: y*y-4, 3.0):.6f}")
+    print(f"  brentq(x^2-4, [0,5])   = {brentq_solve(lambda y: y*y-4, 0.0, 5.0):.6f}")
 
-    ok = rel.max() < 1e-2 and n_valid >= n_t * 0.9
-    print(f"\nPASS (max rel err < 1e-2, >=90% valid): {ok}")
+    ok = rel.max() < 1e-2 and n_valid >= n_t * 0.9 and ok_c and ok_ratio
+    print(f"\nPASS: {ok}")
     return 0 if ok else 1
 
 
