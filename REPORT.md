@@ -167,3 +167,38 @@ General lesson for implicit-law discovery: perfect prediction at the fixed
 point does not imply parameter identification. Any test reporting recovered
 coefficients must either (a) constrain the gauge or (b) report only
 gauge-invariant combinations (here, `c/b = 9.287`).
+
+---
+
+## Quantum-specific capabilities (post-session)
+
+The four restricted closings split along quantum/classical lines:
+
+| Module | Test case | Domain | What's quantum-relevant |
+|---|---|---|---|
+| `solvers.py` | Colebrook friction | Classical | None (generic implicit-form fitter) |
+| `observable_selection.py` | ZZ Hamiltonian | **Quantum** | Ranks measurement observables by Jacobian cond; auto-rejects ⟨Z₁⟩ alone (h invisible) |
+| `novelty.py` | Harmonic detection | Generic | Applies to quantum spectra / time traces |
+| `active_loop.py` | ZZ Hamiltonian | **Quantum** | D-optimal measurement-time selection for a quantum system |
+
+### What the quantum modules prove
+
+- **Observable selection**: given candidates {⟨Z₁⟩, ⟨X₁⟩, ⟨X₂⟩, ⟨Y₁⟩, ⟨Y₂⟩, ⟨Z₂⟩},
+  the pipeline ranks ⟨X₁⟩ highest (cond=2.53) and ⟨Z₁⟩ insufficient (cond=9.4e10).
+  This catches the same failure that broke the *original* unknown-Hamiltonian
+  proposal — the human-supplied `|+0⟩ / ⟨Z₁⟩` combination cannot recover h.
+  The pipeline now self-diagnoses this.
+
+- **Active loop**: from 5 short-time initial points with 2% noise, D-optimal
+  time selection recovers J and h to <5% after 3 rounds of 5 additional
+  measurements each. Warm-start is essential: without it, D-optimal times
+  land the refit in a different aliased basin of the periodic ZZ model.
+
+### What remains open (quantum side)
+
+- Joint design across observables AND times (currently sequential).
+- Hardware constraints on measurable times / observables.
+- Adaptive oracle selection (which backend to query next).
+- Generalization beyond 2-qubit Pauli systems.
+
+These are research-scope; the two closed items each prove a scoped capability.
