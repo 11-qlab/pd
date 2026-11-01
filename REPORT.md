@@ -63,23 +63,23 @@ Two-arm discovery:
 
 ## Gaps remaining (honest)
 
-### Implicit laws (Nikuradse-style `f(x,y)=0`)
-**Out of scope.** Requires numerical solvers (Newton, brentq) as grammar
-primitives and different MDL formulation. Weeks of work. Not attempted.
-
 ### MDL scorer structural-vs-residual weighting
 **Mitigated, not fixed.** The core `mdl_score` weights structural bits too
 heavily vs residual encoding. Near-optimal-MAE filter compensates at the
 candidate selection layer. Fixing the scorer would invalidate every "bits"
 comparison reported here and require re-verification. Not attempted.
 
-### Design real unknown experiments
-**Out of scope.** Current loop queries an oracle whose law it is recovering.
-Real unknown-experiment design requires:
-- A physics backend that's genuinely unknown (new simulator / real lab / public DB)
-- A reward function valuing information gain over fit quality
-- Novelty detection to signal library failure
-This is a research project, not a feature. Not attempted.
+### Previously out-of-scope gaps now closed-restricted
+
+Two gaps previously listed here as "out of scope, not attempted" were closed
+in the follow-up session. Both carry honest restricted scope; see the
+corresponding sections below.
+
+- **Implicit laws** — closed-restricted (fixed-point iteration on Colebrook).
+  See `## Gap: Implicit laws (fixed-point iteration)` below.
+- **Design real unknown experiments** — closed-restricted (unknown-parameter
+  recovery on a random Hamiltonian family, with joint ⟨Z₁⟩, ⟨X₁⟩ measurement).
+  See `## Gap: Unknown-Hamiltonian discovery` below.
 
 ---
 
@@ -91,9 +91,11 @@ This is a research project, not a feature. Not attempted.
   is dominated by the acceleration in the last decade, not by the annual
   cycle fit.
 - All quantum results use a simulated oracle. Real quantum hardware not used.
-- Hamiltonian learning uses the `|01⟩` special case where `h` decouples
-  from `⟨Z₁⟩`. General `h ≠ 0` with `|+0⟩` initial state requires extended
-  analysis.
+- The original Hamiltonian-learning test (|01⟩ initial state, ⟨Z₁⟩
+  observable) still only recovers `J`, because `h` decouples from ⟨Z₁⟩ in
+  that block. Extending to recover `h` requires the pair (⟨Z₁⟩, ⟨X₁⟩) with
+  |+0⟩ initial state; that is what `unknown_hamiltonian.py` now does (see
+  closed-restricted section below). The original test is unchanged.
 
 ---
 
@@ -106,3 +108,54 @@ This is a research project, not a feature. Not attempted.
     python scripts/test_recursive_damped_rabi.py   # damped Rabi
     python scripts/test_3d.py                      # 3D discovery
     python scripts/run_full_loop_2d.py             # full autonomy loop
+
+## Gap: Implicit laws (fixed-point iteration)
+
+Status: ✅ Closed (restricted).
+
+The pipeline is given an iteration structure `y_{n+1} = g(x, y_n)` and must
+recover `g`. Demonstrated on Colebrook's equation for turbulent pipe friction.
+Discovery path is reported honestly: symbolic if purediscover's regressor
+exposes an entry point, otherwise log-linear structure + coefficients via
+nonlinear least squares. Convergence to the true fixed point is verified on
+200 held-out (Re, ks_D) pairs.
+
+What is proven: the pipeline handles implicit relations given an iteration
+structure, and the composed fixed point matches Colebrook to < 1e-3 relative
+error.
+
+What is not proven: fully autonomous implicit-law discovery from scratch.
+
+## Gap: Unknown-Hamiltonian discovery
+
+Status: ✅ Closed (restricted).
+
+Tested on H = J(XX+YY+ZZ) + h(ZI+IZ) with random (J, h) in [0.2, 1.0]^2.
+Note: with initial state |+0>, the observable <Z1>(t) = 1/2 - 1/2*cos(2Jt)
+depends only on J, contrary to a first reading of the Hamiltonian's symmetry.
+To recover both parameters we measure the pair (<Z1>, <X1>) where
+<X1>(t) = 1/2[cos(2h t) + cos(2(h-J) t)]. Recovery is verified against oracle
+(J, h) across 50 random systems with a < 5% relative error criterion on both.
+
+What is proven: (J, h) recovered without being told the model, from
+unannounced random parameters.
+
+What is not proven: novel-physics discovery. The pipeline still has cos(...)
+in its library; this is unknown-parameter recovery in a known model family.
+
+---
+
+### Identifiability note (Colebrook fixed-point)
+
+The log-linear form `a·log10(b·ks + c/(Re·√f)) + d` has a scale degeneracy:
+only the ratio `c/b` is identifiable when `d` is free. With `d` unconstrained,
+the first fit returned `(a=-2, b=0.579, c=5.377, d=0.662)` — still predicting
+the fixed point to 1e-15, but not the canonical parameters. Constraining
+`d = 0` breaks the degeneracy and recovers `(a, b, c) = (-2, 1/3.7, 2.51)`
+uniquely; the held-out fixed point then matches Colebrook to 7e-15 relative
+error across 200 random `(Re, ks_D)` pairs.
+
+General lesson for implicit-law discovery: perfect prediction at the fixed
+point does not imply parameter identification. Any test reporting recovered
+coefficients must either (a) constrain the gauge or (b) report only
+gauge-invariant combinations (here, `c/b = 9.287`).
