@@ -42,12 +42,19 @@ def _exp(x):
     return np.clip(np.exp(np.clip(x, -50, 50)), 1e-50, 1e50)
 
 
+def _log1p(y):
+    return np.log1p(np.maximum(y, -0.999999))
+
+def _expm1(y):
+    return np.expm1(y)
+
 TRANSFORMS = {
     "identity":   (lambda x: x, lambda x: x),
     "log":        (_log, _exp),
     "reciprocal": (_recip, _recip),
     "sqrt":       (_sqrt, _square),
     "square":     (_square, _sqrt),
+    "log1p":      (_log1p, _expm1),
 }
 
 
@@ -95,7 +102,7 @@ def discover_structure(data, x_names, y_name, transforms=None):
     if not results:
         return {"best": None, "all_scores": [], "expression": None}
 
-    complexity = ["identity", "log", "reciprocal", "sqrt", "square"]
+    complexity = ["identity", "log", "reciprocal", "sqrt", "square", "log1p"]
     def key(r):
         c = complexity.index(r["transform_x"]) + complexity.index(r["transform_y"])
         return (-r["r2"], c)
@@ -111,10 +118,12 @@ def discover_structure(data, x_names, y_name, transforms=None):
 def _format(best, x_var, y_name):
     tx_str = {"identity": x_var, "log": f"ln({x_var})",
               "reciprocal": f"1/{x_var}", "sqrt": f"sqrt({x_var})",
-              "square": f"{x_var}^2"}[best["transform_x"]]
+              "square": f"{x_var}^2",
+              "log1p": f"ln(1+{x_var})"}[best["transform_x"]]
     ty_str = {"identity": y_name, "log": f"ln({y_name})",
               "reciprocal": f"1/{y_name}", "sqrt": f"sqrt({y_name})",
-              "square": f"{y_name}^2"}[best["transform_y"]]
+              "square": f"{y_name}^2",
+              "log1p": f"ln(1+{y_name})"}[best["transform_y"]]
     return f"{ty_str} = {best['slope']:.6g} * {tx_str} + {best['intercept']:.6g}"
 
 
