@@ -1,0 +1,138 @@
+=== FULL 2D loop: templates + sparse + convergence (MAE metric) ===
+physics  : <Z>(Bx,t) = cos(2*Bx*t)
+noise    : 2.0%   max_iter : 30
+
+seed: 8 points
+
+--- iter 1/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=9.971e-03  mre=2.677e-02  bits=504.1
+                 1.02211881419648*cos(2.00931574276207*Bx*t)
+  BEST         : [templ] bits=504.1  mae=9.971e-03
+                 1.02211881419648*cos(2.00931574276207*Bx*t)
+  convergence  : insufficient_history  streak=0
+  measured     : Bx=0.3122  t=1.3091  y=+0.689521
+  n_points     : 9
+
+--- iter 2/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=9.424e-03  mre=2.749e-02  bits=708.2
+                 1.02274822546375*cos(2.00806094059077*Bx*t + 0.0043634130809126)
+  BEST         : [templ] bits=708.2  mae=9.424e-03
+                 1.02274822546375*cos(2.00806094059077*Bx*t + 0.0043634130809126)
+  convergence  : insufficient_history  streak=0
+  measured     : Bx=0.2222  t=1.9321  y=+0.659275
+  n_points     : 10
+
+--- iter 3/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=8.751e-03  mre=2.527e-02  bits=696.3
+                 1.02235547596144*sin(2.00785119554213*Bx*t + 1.57556210583609)
+  BEST         : [templ] bits=696.3  mae=8.751e-03
+                 1.02235547596144*sin(2.00785119554213*Bx*t + 1.57556210583609)
+  convergence  : insufficient_history  streak=0
+  measured     : Bx=0.1377  t=2.5825  y=+0.780550
+  n_points     : 11
+
+--- iter 4/30 ---
+  tree_search  : 0 cands
+  templates    : no winner yet
+  BEST         : (none)
+  convergence  : insufficient_history  streak=0
+  measured     : Bx=1.3200  t=0.7962  y=-0.502170
+  n_points     : 12
+
+--- iter 5/30 ---
+  tree_search  : 0 cands
+  templates    : no winner yet
+  BEST         : (none)
+  convergence  : insufficient_history  streak=0
+  measured     : Bx=0.6266  t=2.1521  y=-0.909839
+  n_points     : 13
+
+--- iter 6/30 ---
+  tree_search  : 0 cands
+  templates    : no winner yet
+  BEST         : (none)
+  convergence  : structure_changed  streak=3
+  measured     : Bx=1.2809  t=2.4249  y=+1.034775
+  n_points     : 14
+
+--- iter 7/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=1.060e-02  mre=2.065e-02  bits=504.4
+                 1.01794177828502*cos(2.00716134022247*Bx*t)
+  BEST         : [templ] bits=504.4  mae=1.060e-02
+                 1.01794177828502*cos(2.00716134022247*Bx*t)
+  convergence  : structure_changed  streak=1
+  measured     : Bx=0.2580  t=2.6856  y=+0.181594
+  n_points     : 15
+
+--- iter 8/30 ---
+  tree_search  : 0 cands
+  templates    : no winner yet
+  BEST         : (none)
+  convergence  : structure_changed  streak=1
+  measured     : Bx=1.6708  t=0.5741  y=-0.340955
+  n_points     : 16
+
+--- iter 9/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=1.004e-02  mre=2.006e-02  bits=504.3
+                 1.01684015934151*cos(2.00650133873511*Bx*t)
+  BEST         : [templ] bits=504.3  mae=1.004e-02
+                 1.01684015934151*cos(2.00650133873511*Bx*t)
+  convergence  : structure_changed  streak=1
+  measured     : Bx=0.7482  t=0.1206  y=+0.985356
+  n_points     : 17
+
+--- iter 10/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=1.008e-02  mre=1.884e-02  bits=504.3
+                 1.01474397031919*cos(2.00607712730486*Bx*t)
+  BEST         : [templ] bits=504.3  mae=1.008e-02
+                 1.01474397031919*cos(2.00607712730486*Bx*t)
+  convergence  : structure_changed  streak=2
+  measured     : Bx=1.6762  t=2.6090  y=-0.755182
+  n_points     : 18
+
+--- iter 11/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=1.087e-02  mre=1.693e-02  bits=504.3
+                 1.0083369412468*cos(2.00093294872835*Bx*t)
+  BEST         : [templ] bits=504.3  mae=1.087e-02
+                 1.0083369412468*cos(2.00093294872835*Bx*t)
+  convergence  : structure_changed  streak=3
+  measured     : Bx=1.2129  t=0.7811  y=-0.321148
+  n_points     : 19
+
+--- iter 12/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=1.033e-02  mre=1.613e-02  bits=504.3
+                 1.00830496684177*cos(2.00090992933656*Bx*t)
+  BEST         : [templ] bits=504.3  mae=1.033e-02
+                 1.00830496684177*cos(2.00090992933656*Bx*t)
+  convergence  : structure_changed  streak=4
+  measured     : Bx=0.1198  t=2.0276  y=+0.860465
+  n_points     : 20
+
+--- iter 13/30 ---
+  tree_search  : 0 cands
+  templates    : top mae=1.138e-02  mre=1.665e-02  bits=504.4
+                 1.00539670498843*cos(2.00077691226457*Bx*t)
+  BEST         : [templ] bits=504.4  mae=1.138e-02
+                 1.00539670498843*cos(2.00077691226457*Bx*t)
+  convergence  : converged  streak=5
+  >>> CONVERGED at iteration 13
+=== verification vs analytic  <Z> = cos(2*Bx*t) ===
+  MAE(measured vs analytic)  = 0.0119   (expected for 2% noise: ~0.016)
+  max|measured - analytic|   = 0.0373
+
+=== convergence summary ===
+  iterations run : 13
+  best expr      : 1.00539670498843*cos(2.00077691226457*Bx*t)
+  best mae       : 0.011381139557426211
+  best bits      : 504.39967947174017
+  final expr     : 1.00539670498843*cos(2.00077691226457*Bx*t)
+
+  STOPPED AT ITERATION 13  (cap 30)

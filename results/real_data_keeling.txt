@@ -1,0 +1,26 @@
+[data] downloading https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.csv
+[data] saved /root/projects/genesis/purediscover/datasets/real/co2_mm_mlo.csv (38776 bytes)
+[data] 823 valid monthly observations
+[data] t range  [1958.20, 2026.71] years
+[data] y range  [314.44, 429.55] ppm
+
+[split] train: 702 rows (t < 58.51)
+[split] test:  121 rows  (t >= 58.51)
+
+=== template arm (ND) ===
+  14 candidates in 132.5s
+  [0] power_law on t             mae=5.903e-01  bits=     inf
+      0.273540900481759*Abs(t)**1.4153359883027 + 315.979604857987
+  [1] sin(a*x+b)+c on t          mae=5.934e-01  bits=     inf
+      1033.58361995852 - 731.16406961276*sin(0.00600079869720556*t + 1.75170151376562)
+  [2] quadratic on t             mae=5.950e-01  bits=     inf
+      0.0123120631900883*t**2 + 0.805983468214089*t + 314.267037375172
+  [3] exp(a*x)+c on t            mae=6.409e-01  bits=     inf
+      58.3261435679565*exp(0.0160230548906621*t) + 255.240452499114
+  [4] sinc on t                  mae=1.493e+00  bits=     inf
+      406.627221586576 - 87.2160862209146*sin(0.0502492909675731*t)/(0.0502492909675731*t + 1.0e-30)
+
+=== sparse arm ===
+  0 candidates in 39.0s
+
+FAIL: no valid candidates

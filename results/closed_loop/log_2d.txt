@@ -1,0 +1,211 @@
+=== 2D quantum closed loop ===
+physics: <Z>(Bx,t) = cos(2*Bx*t)
+Bx range: (0.1, 2.0),  t range: (0.1, 3.0)
+seed points: 8,  iterations: 20
+
+seed: 8 points
+  Bx=0.300  t=0.300  y=+0.989840
+  Bx=0.300  t=1.133  y=+0.761399
+  Bx=0.300  t=1.967  y=+0.386642
+  Bx=0.300  t=2.800  y=-0.111037
+  Bx=1.800  t=0.300  y=+0.452937
+  Bx=1.800  t=1.133  y=-0.575680
+  Bx=1.800  t=1.967  y=+0.700775
+  Bx=1.800  t=2.800  y=-0.787898
+
+--- iter 1/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y+b)
+                 expr = 0.997363271151221*cos(1.99876495587166*Bx*t + 0.008177087407634)
+                 MRE  = 1.885e-02  bits=712.1  ok=True
+  proposed     : Bx=0.3122  t=1.3091
+  measured     : y=+0.68382022  analytic=+0.68405008  err=2.30e-04
+  n_points     : 9
+
+--- iter 2/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 0.994844239841513*cos(2.00083117149071*Bx*t)
+                 MRE  = 1.518e-02  bits=508.2  ok=True
+  proposed     : Bx=0.2222  t=1.9321
+  measured     : y=+0.64223972  analytic=+0.65338707  err=1.11e-02
+  n_points     : 10
+
+--- iter 3/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = bilinear
+                 expr = 0.0828064747482354*Bx*t - 0.542648645459347*Bx - 0.443766178661829*t + 1.37848078591307
+                 MRE  = 5.021e-01  bits=inf  ok=False
+  proposed     : Bx=0.1377  t=2.5825
+  measured     : y=+0.77084911  analytic=+0.75752578  err=1.33e-02
+  n_points     : 11
+
+--- iter 4/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = exp(-a*x*y+b)
+                 expr = 1.38601533920132*exp(-2.14710191083421*Bx*t)
+                 MRE  = 6.248e-01  bits=inf  ok=False
+  proposed     : Bx=1.3200  t=0.7962
+  measured     : y=-0.51443927  analytic=-0.50655932  err=7.88e-03
+  n_points     : 12
+
+--- iter 5/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 0.999166495098119*cos(2.00236261507393*Bx*t)
+                 MRE  = 1.390e-02  bits=inf  ok=False
+  proposed     : Bx=0.6266  t=2.1521
+  measured     : y=-0.90391437  analytic=-0.90272222  err=1.19e-03
+  n_points     : 13
+
+--- iter 6/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = sin(a*x*y+b)
+                 expr = -1.00110687256794*sin(2.00034868303912*Bx*t - 1.56452156410954)
+                 MRE  = 1.504e-02  bits=752.3  ok=True
+  proposed     : Bx=1.2809  t=2.4249
+  measured     : y=+1.01994924  analytic=+0.99746165  err=2.25e-02
+  n_points     : 14
+
+--- iter 7/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.0034297229267*cos(2.00357180665096*Bx*t)
+                 MRE  = 1.399e-02  bits=500.3  ok=True
+  proposed     : Bx=0.2580  t=2.6856
+  measured     : y=+0.18576976  analytic=+0.18404887  err=1.72e-03
+  n_points     : 15
+
+--- iter 8/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00344398416041*cos(2.00346907629312*Bx*t)
+                 MRE  = 1.423e-02  bits=504.4  ok=True
+  proposed     : Bx=1.6708  t=0.5741
+  measured     : y=-0.33471116  analytic=-0.34056405  err=5.85e-03
+  n_points     : 16
+
+--- iter 9/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00254253263064*cos(2.00288768394924*Bx*t)
+                 MRE  = 1.461e-02  bits=504.2  ok=True
+  proposed     : Bx=0.7482  t=0.1206
+  measured     : y=+0.99102863  analytic=+0.98377328  err=7.26e-03
+  n_points     : 17
+
+--- iter 10/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.0032162356024*cos(2.00302740290734*Bx*t)
+                 MRE  = 1.414e-02  bits=504.2  ok=True
+  proposed     : Bx=1.6762  t=2.6090
+  measured     : y=-0.76371717  analytic=-0.77864985  err=1.49e-02
+  n_points     : 18
+
+--- iter 11/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = sin(a*x*y+b)
+                 expr = -1.00118170592405*sin(1.9984950134107*Bx*t - 1.56561306457058)
+                 MRE  = 1.600e-02  bits=740.3  ok=True
+  proposed     : Bx=1.2129  t=0.7811
+  measured     : y=-0.32393875  analytic=-0.31834573  err=5.59e-03
+  n_points     : 19
+
+--- iter 12/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00028564176138*cos(2.00060141329346*Bx*t)
+                 MRE  = 1.456e-02  bits=504.3  ok=True
+  proposed     : Bx=0.1198  t=2.0276
+  measured     : y=+0.88337920  analytic=+0.88426215  err=8.83e-04
+  n_points     : 20
+
+--- iter 13/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00018566657406*cos(2.00059687802899*Bx*t)
+                 MRE  = 1.390e-02  bits=504.3  ok=True
+  proposed     : Bx=0.6783  t=1.3828
+  measured     : y=-0.29924559  analytic=-0.30035608  err=1.11e-03
+  n_points     : 21
+
+--- iter 14/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = sin(a*x*y+b)
+                 expr = 1.00100263607373*sin(1.9985700022514*Bx*t - 4.70763837025383)
+                 MRE  = 1.448e-02  bits=700.3  ok=True
+  proposed     : Bx=1.8746  t=0.2653
+  measured     : y=+0.53730213  analytic=+0.54472045  err=7.42e-03
+  n_points     : 22
+
+--- iter 15/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = sin(a*x*y+b)
+                 expr = -1.00086084864893*sin(1.99842080356685*Bx*t - 1.56559387914115)
+                 MRE  = 1.444e-02  bits=752.3  ok=True
+  proposed     : Bx=1.4208  t=1.2734
+  measured     : y=-0.91014373  analytic=-0.88842110  err=2.17e-02
+  n_points     : 23
+
+--- iter 16/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00147466279718*cos(2.0002101856503*Bx*t)
+                 MRE  = 1.402e-02  bits=504.3  ok=True
+  proposed     : Bx=1.3773  t=2.0049
+  measured     : y=+0.72233277  analytic=+0.72457212  err=2.24e-03
+  n_points     : 24
+
+--- iter 17/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00120013480541*cos(2.00000016351936*Bx*t)
+                 MRE  = 1.363e-02  bits=504.4  ok=True
+  proposed     : Bx=1.6147  t=2.6906
+  measured     : y=-0.73522335  analytic=-0.74157610  err=6.35e-03
+  n_points     : 25
+
+--- iter 18/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = sin(a*x*y+b)
+                 expr = -1.0020900668698*sin(1.99724958589334*Bx*t - 1.56504351782383)
+                 MRE  = 1.400e-02  bits=748.3  ok=True
+  proposed     : Bx=1.1933  t=2.4650
+  measured     : y=+0.91440344  analytic=+0.92088896  err=6.49e-03
+  n_points     : 26
+
+--- iter 19/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00028896034393*cos(1.99937476854778*Bx*t)
+                 MRE  = 1.310e-02  bits=504.4  ok=True
+  proposed     : Bx=0.3175  t=2.4685
+  measured     : y=+0.01375663  analytic=+0.00311044  err=1.06e-02
+  n_points     : 27
+
+--- iter 20/20 ---
+  tree_search  : 0 cands 
+  templates    : 10 fitted;  best = cos(a*x*y)
+                 expr = 1.00030977208604*cos(1.99920268755859*Bx*t)
+                 MRE  = 3.961e-02  bits=496.4  ok=True
+  proposed     : Bx=0.8276  t=0.4307
+  measured     : y=+0.76199303  analytic=+0.75646412  err=5.53e-03
+  n_points     : 28
+
+=== final template ranking (all 28 points) ===
+  [0] cos(a*x*y+b)          MRE=4.449e-02  bits=     704.4  ok=True
+       1.00149715803389*cos(1.99766358036836*Bx*t + 0.0036410807267843)
+  [1] sin(a*x*y+b)          MRE=4.449e-02  bits=     752.4  ok=True
+       -1.00149715825533*sin(1.99766357909925*Bx*t - 1.56715524554888)
+  [2] exp(-a*x*y+b)         MRE=1.087e+00  bits=       inf  ok=False
+       1.57393764083901*exp(-2.9668712393494*Bx*t)
+  [3] sin(a*x*y)            MRE=1.270e+00  bits=       inf  ok=False
+       0.201349509457184*sin(0.809292213412703*Bx*t)
+  [4] exp(-a*x-b*y+c)       MRE=1.495e+00  bits=       inf  ok=False
+       3.75055809624032*exp(-2.91455604766549*Bx - 0.691972175272373*t)
+  [5] power_product         MRE=1.503e+00  bits=       inf  ok=False
+       -4479.46127966482*(Abs(Bx) + 1.0e-12)**8.35474453399243e-5*(Abs(t) + 1.0e-12)**6.49567720627888e-5 +
+
+worst |measured - analytic| over 28 points: 2.25e-02
+oracle exactness: REVIEW

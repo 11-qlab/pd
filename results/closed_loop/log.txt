@@ -1,0 +1,118 @@
+=== quantum closed loop ===
+physics     : H = Bx * X, Bz=0.0, t=0.5, |0>, obs=Z
+analytic    : <Z>(Bx) = cos(2*0.5*Bx) = cos(Bx)
+x_range     : (0.05, 1.0)
+iterations  : 10
+
+seed: 5 points
+  Bx=0.1000  y=+0.995004  analytic=+0.995004
+  Bx=0.3000  y=+0.955336  analytic=+0.955336
+  Bx=0.5000  y=+0.877583  analytic=+0.877583
+  Bx=0.7000  y=+0.764842  analytic=+0.764842
+  Bx=0.9000  y=+0.621610  analytic=+0.621610
+
+--- iteration 1/10 ---
+  candidates   : 5
+  best (short) : {'expr': 0.0347233005219964*Bx**3 - Bx**2/2 + 1, 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.0014905237141319137}
+  proposed x   : 0.995226  (analytic=+0.544313)
+  measured y   : +0.544313  (residual=+2.22e-16)
+  added        : True  total points: 6
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 2/10 ---
+  candidates   : 3
+  best (short) : {'expr': -9.0383112480238e-5*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.013103069131535071}
+  proposed x   : 0.393719  (analytic=+0.923489)
+  measured y   : +0.923489  (residual=+0.00e+00)
+  added        : True  total points: 7
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 3/10 ---
+  candidates   : 3
+  best (short) : {'expr': -0.00308638487236423*Bx**2 + 7*exp(-7*Bx/10)/6, 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.049061373858859524}
+  proposed x   : 0.603769  (analytic=+0.823202)
+  measured y   : +0.823202  (residual=-1.11e-16)
+  added        : True  total points: 8
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 4/10 ---
+  candidates   : 2
+  best (short) : {'expr': -0.000144737662555189*Bx**3 + exp(-5*Bx**2/8), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.02075832157257494}
+  proposed x   : 0.789950  (analytic=+0.703881)
+  measured y   : +0.703881  (residual=+1.11e-16)
+  added        : True  total points: 9
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 5/10 ---
+  candidates   : 4
+  best (short) : {'expr': -6.62404690514452e-5*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.015431787067142952}
+  proposed x   : 0.193216  (analytic=+0.981392)
+  measured y   : +0.981392  (residual=+1.11e-16)
+  added        : True  total points: 10
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 6/10 ---
+  candidates   : 3
+  best (short) : {'expr': -0.000117567236277971*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.014254848444785556}
+  proposed x   : 0.050000  (analytic=+0.998750)
+  measured y   : +0.998750  (residual=+1.11e-16)
+  added        : True  total points: 11
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 7/10 ---
+  candidates   : 2
+  best (short) : {'expr': -0.00023896417148645*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.012992923498330401}
+  proposed x   : 0.651508  (analytic=+0.795171)
+  measured y   : +0.795171  (residual=-1.11e-16)
+  added        : True  total points: 12
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 8/10 ---
+  candidates   : 2
+  best (short) : {'expr': -0.000266833586554867*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.014016684972156036}
+  proposed x   : 0.737437  (analytic=+0.740194)
+  measured y   : +0.740194  (residual=-1.11e-16)
+  added        : True  total points: 13
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 9/10 ---
+  candidates   : 4
+  best (short) : {'expr': -0.000230157572444075*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.014876854067560567}
+  proposed x   : 0.446231  (analytic=+0.902080)
+  measured y   : +0.902080  (residual=-1.11e-16)
+  added        : True  total points: 14
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+--- iteration 10/10 ---
+  candidates   : 3
+  best (short) : {'expr': -0.00491142443125196*Bx**2 + 9*exp(-3*Bx/5)/8, 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.04853788995158639}
+  proposed x   : 0.069095  (analytic=+0.997614)
+  measured y   : +0.997614  (residual=+1.11e-16)
+  added        : True  total points: 15
+  checkpoint   : /root/projects/genesis/purediscover/results/closed_loop/state.json
+
+=== final fit ===
+final candidates: 3
+  [00] {'expr': -0.0003462833649117*Bx**3 + exp(-3*Bx**2/5), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.014027870220954499}
+  [01] {'expr': -0.00586032522151643*Bx**2 + 11*exp(-4*Bx/7)/10, 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 12, 'fit_error': 0.0495631626226632}
+  [02] {'expr': -0.0152458577723328*Bx**3 + 0.979252*log(2.71828182845905 - Bx**2), 'class': 'NOVEL', 'detail': {'class': 'NOVEL'}, 'n_nodes': 16, 'fit_error': 0.01518316638855871}
+
+=== collected points: y (measured) vs analytic ===
+  Bx= 0.05000  y=+0.99875026  analytic=+0.99875026  err=1.11e-16
+  Bx= 0.06910  y=+0.99761386  analytic=+0.99761386  err=1.11e-16
+  Bx= 0.10000  y=+0.99500417  analytic=+0.99500417  err=0.00e+00
+  Bx= 0.19322  y=+0.98139177  analytic=+0.98139177  err=1.11e-16
+  Bx= 0.30000  y=+0.95533649  analytic=+0.95533649  err=1.11e-16
+  Bx= 0.39372  y=+0.92348890  analytic=+0.92348890  err=0.00e+00
+  Bx= 0.44623  y=+0.90208002  analytic=+0.90208002  err=1.11e-16
+  Bx= 0.50000  y=+0.87758256  analytic=+0.87758256  err=1.11e-16
+  Bx= 0.60377  y=+0.82320171  analytic=+0.82320171  err=1.11e-16
+  Bx= 0.65151  y=+0.79517055  analytic=+0.79517055  err=1.11e-16
+  Bx= 0.70000  y=+0.76484219  analytic=+0.76484219  err=0.00e+00
+  Bx= 0.73744  y=+0.74019421  analytic=+0.74019421  err=1.11e-16
+  Bx= 0.78995  y=+0.70388101  analytic=+0.70388101  err=1.11e-16
+  Bx= 0.90000  y=+0.62160997  analytic=+0.62160997  err=0.00e+00
+  Bx= 0.99523  y=+0.54431321  analytic=+0.54431321  err=2.22e-16
+
+worst |y - analytic| over 15 points: 2.22e-16
+target (oracle is exact): < 1e-12  ->  PASS
