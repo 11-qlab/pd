@@ -1,6 +1,5 @@
 # --- data / downloads ---
 datasets/
-results/
 *.csv
 *.csv.gz
 *.zip
@@ -35,3 +34,8 @@ benchmark_*.json
 paper/benchmark_*.json
 autonomic.md
 work.md
+data/
+outputs/
+work1.md
+pmlb_cache/
+pipeline

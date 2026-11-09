@@ -1,0 +1,505 @@
+[
+  {
+    "lid": "quark_gluon_plasma_energy_density",
+    "ok": false,
+    "p90": 1.3064028847904883,
+    "equation": "(0.5036023 - (((-0.39051598 - sqrt(x0)) / x1) / (x1 / (x2 / (x1 * x1))))) / square(-0.054230988 - x0",
+    "p90_ok": false
+  },
+  {
+    "lid": "quark_model_magnetic_moment",
+    "ok": false,
+    "p90": 0.5964551692155443,
+    "equation": "(sqrt((x0 * x1) * x4) - (sqrt(x2 * x2) / sqrt(x4 + (sqrt(x4) / (x3 * sqrt(x4)))))) - -0.3716175",
+    "p90_ok": false
+  },
+  {
+    "lid": "deformation_potential_scattering",
+    "ok": false,
+    "p90": 0.20175323246540924,
+    "equation": "((x0 / x5) / x2) * ((square(((x3 + 0.9790609) + (x0 * 0.07990417)) / x1) / x4) * 0.029644586)",
+    "p90_ok": false
+  },
+  {
+    "lid": "piezoelectric_scattering_rate",
+    "ok": false,
+    "p90": 1.734447334278665,
+    "equation": "sqrt(sqrt(sqrt(x1)) + x2)",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_frohlich_coupling_constant",
+    "ok": false,
+    "p90": 1.5636407724336812,
+    "equation": "(x0 * x4) + 1.6226195",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_exciton_binding_energy",
+    "ok": true,
+    "p90": 0.0,
+    "equation": "square(x1) * ((x0 / x3) * x2)",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_direct_bandgap_absorption",
+    "ok": true,
+    "p90": 2.15343798455411e-07,
+    "equation": "sqrt((x0 / ((x2 / x0) / ((x1 / x2) + -0.99999994))) / -0.99999994)",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_urbach_tail",
+    "ok": false,
+    "p90": 1.1908522514346267,
+    "equation": "exp(exp(square(x1 / x2) * (-0.92446816 / x3)))",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_phonon_thermal_conductivity",
+    "ok": true,
+    "p90": 2.000000006600089e-08,
+    "equation": "(x1 * (x0 * x2)) * 0.33333334",
+    "p90_ok": true
+  },
+  {
+    "lid": "planck_oscillator_energy",
+    "ok": false,
+    "p90": 0.8058336441734272,
+    "equation": "log((sqrt(exp(x0)) + (x0 / x1)) / x2)",
+    "p90_ok": false
+  },
+  {
+    "lid": "proximity_effect_sc",
+    "ok": true,
+    "p90": 4.888914982928595e-08,
+    "equation": "(x3 * 6.283185) / (((x1 / x0) / x3) / x2)",
+    "p90_ok": true
+  },
+  {
+    "lid": "hawking_radiation_rate",
+    "ok": false,
+    "p90": 8.824333276808549,
+    "equation": "(((x0 * x3) * -39637.125) + -107363.65) / (x2 / square(x0 * (x1 / x2)))",
+    "p90_ok": false
+  },
+  {
+    "lid": "FREE_ELECTRON_HALL_ANGLE",
+    "ok": false,
+    "p90": 0.30779855440487086,
+    "equation": "3.5900743 / exp(sqrt(square(x0 * square(square(x1 - 1.5711858)))) + sqrt(square(x0 * (x1 - 1.5711858",
+    "p90_ok": false
+  },
+  {
+    "lid": "FREE_ELECTRON_LORENTZ_NUMBER",
+    "ok": true,
+    "p90": 1.7212968912623825e-07,
+    "equation": "(((((x1 + x0) - x0) - (x0 + -5.8772883e-8)) + x0) / ((x0 * x0) / x1)) * 3.2898684",
+    "p90_ok": true
+  },
+  {
+    "lid": "tunneling_penetration_depth_formula",
+    "ok": false,
+    "p90": 0.6077780164960926,
+    "equation": "exp(sqrt(x2) - (sqrt((x1 - x0) * x3) * 1.9167558))",
+    "p90_ok": false
+  },
+  {
+    "lid": "PHONON_DIATOMIC_OPTICAL",
+    "ok": false,
+    "p90": 0.0777101203642161,
+    "equation": "x0 / square(x5 * 0.7309553)",
+    "p90_ok": false
+  },
+  {
+    "lid": "PHONON_DEBYE_TEMPERATURE",
+    "ok": true,
+    "p90": 1.452059487290961e-16,
+    "equation": "(x0 * x2) / x1",
+    "p90_ok": true
+  },
+  {
+    "lid": "SUPERCONDUCTIVITY_PENETRATION_DEPTH",
+    "ok": true,
+    "p90": 2.4224777464432865e-16,
+    "equation": "(x2 / square(x0 * x1)) / x3",
+    "p90_ok": true
+  },
+  {
+    "lid": "transition_rate_dipole_ext2",
+    "ok": false,
+    "p90": 0.9343810343072909,
+    "equation": "((((sqrt(x3 / x1) / sqrt(x4)) * ((sqrt(x2) * 4.2151504) * sqrt(x0))) * x1) * x1) / x4",
+    "p90_ok": false
+  },
+  {
+    "lid": "FREE_ELECTRON_DRUDE_RELAXATION",
+    "ok": false,
+    "p90": 0.0,
+    "equation": "((x0 / x3) * x1) * x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "harmonic_oscillator_energy_levels",
+    "ok": true,
+    "p90": 2.9982140568940326e-08,
+    "equation": "x0 * ((x1 + 0.49999997) * x2)",
+    "p90_ok": true
+  },
+  {
+    "lid": "PHONON_EINSTEIN_FREQUENCY",
+    "ok": true,
+    "p90": 0.0,
+    "equation": "sqrt(x0 / x1)",
+    "p90_ok": true
+  },
+  {
+    "lid": "FREE_ELECTRON_FERMI_WAVEVECTOR",
+    "ok": true,
+    "p90": 3.5299847437543353e-09,
+    "equation": "x0 * (square(x0) * 0.033773728)",
+    "p90_ok": true
+  },
+  {
+    "lid": "PHONON_EINSTEIN_HEAT_CAPACITY",
+    "ok": false,
+    "error": "cannot unpack non-iterable NoneType object"
+  },
+  {
+    "lid": "PHONON_BOSE_EINSTEIN_DISTRIBUTION",
+    "ok": false,
+    "p90": 0.03434118945147599,
+    "equation": "((x3 * x0) * ((sqrt(x2 - -0.27136806) * sqrt(sqrt(x2 - -1.171198) * sqrt(x2))) - -0.050540585)) / x1",
+    "p90_ok": true
+  },
+  {
+    "lid": "SUPERCONDUCTIVITY_JOSEPHSON_CURRENT",
+    "ok": false,
+    "p90": 0.014147596933910721,
+    "equation": "x1 + (x1 * square(square(x0 - 1.5303608) + ((square(square(square(x0 - 1.5706189)) - 1.773723) - x0)",
+    "p90_ok": true
+  },
+  {
+    "lid": "gl_coherence",
+    "ok": true,
+    "p90": 2.763355821551563e-16,
+    "equation": "(((x1 / x2) / x0) / (x2 + x2)) * x1",
+    "p90_ok": true
+  },
+  {
+    "lid": "coherence_length_superconductor",
+    "ok": true,
+    "p90": 2.7237875447241905e-08,
+    "equation": "((x1 * 0.47285554) * ((0.78205675 / x0) * 0.8607626)) * x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "chandrasekhar_limit_estimate",
+    "ok": true,
+    "p90": 2.3550230863724353e-16,
+    "equation": "(x1 * (((sqrt(x1 / x0) / x3) / (x0 / sqrt(x2))) / x3)) * x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "FREE_ELECTRON_PLASMA_FREQUENCY",
+    "ok": true,
+    "p90": 0.0,
+    "equation": "sqrt(x3 * ((x0 / (x1 * x2)) * x0))",
+    "p90_ok": true
+  },
+  {
+    "lid": "PHONON_SPEED_OF_SOUND",
+    "ok": false,
+    "p90": 2.1491974053802946e-16,
+    "equation": "x0 / square(x1)",
+    "p90_ok": true
+  },
+  {
+    "lid": "SUPERCONDUCTIVITY_COHERENCE_LENGTH",
+    "ok": true,
+    "p90": 1.821548617488855e-08,
+    "equation": "((0.24204198 / x2) * (x0 * x1)) * 1.315102",
+    "p90_ok": true
+  },
+  {
+    "lid": "particle_on_ring_energy_eigenvalues",
+    "ok": true,
+    "p90": 1.4341395488704309e-07,
+    "equation": "square((((x1 + 6.922216e-8) / x0) * ((sqrt(0.50000006 / x2) + -6.829036e-8) * x3)) + -1.5268711e-9)",
+    "p90_ok": true
+  },
+  {
+    "lid": "dirac_cone_graphene_dispersion",
+    "ok": true,
+    "p90": 1.9008849065203308e-16,
+    "equation": "((x0 / x1) / x3) / x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "PHONON_DIATOMIC_ACOUSTIC",
+    "ok": false,
+    "p90": 1.3149110780602804,
+    "equation": "2.0810113 - x5",
+    "p90_ok": false
+  },
+  {
+    "lid": "fermi_energy",
+    "ok": false,
+    "p90": 0.0012342010802468342,
+    "equation": "square((sqrt(sqrt(sqrt(x2) + 1.1991067)) * ((sqrt(sqrt(x2) - 0.091081515) * 1.8838512) / sqrt(x0))) ",
+    "p90_ok": true
+  },
+  {
+    "lid": "crystal_momentum_conservation",
+    "ok": true,
+    "p90": 4.068833755566452e-16,
+    "equation": "x0 + (x3 + x2)",
+    "p90_ok": true
+  },
+  {
+    "lid": "step_well_wavevectors",
+    "ok": false,
+    "p90": 1.8352919632272298e-16,
+    "equation": "sqrt(x2 * (x0 + x0)) / x1",
+    "p90_ok": true
+  },
+  {
+    "lid": "EC_006",
+    "ok": true,
+    "p90": 2.437568931537957e-16,
+    "equation": "1.0 / (square(x1) * x0)",
+    "p90_ok": true
+  },
+  {
+    "lid": "weak_localization_correction",
+    "ok": false,
+    "p90": 0.7331213998821808,
+    "equation": "square(((x1 / x2) + sqrt(x0)) + square(square((x1 / x2) + 0.89387447)))",
+    "p90_ok": false
+  },
+  {
+    "lid": "FREE_ELECTRON_HALL_COEFFICIENT",
+    "ok": true,
+    "p90": 0.0,
+    "equation": "(-1.0 / x1) / x0",
+    "p90_ok": true
+  },
+  {
+    "lid": "fermi_golden_rule_qm",
+    "ok": true,
+    "p90": 3.068832121278842e-08,
+    "equation": "(x0 / (6.2831855 / x1)) / x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "PHONON_DEBYE_CUTOFF",
+    "ok": false,
+    "p90": 0.013718051611807716,
+    "equation": "square(sqrt(((square(log(square(x1 * (2.484677 / x0)) - 0.09181622)) - -0.22608756) + 0.3667736) * 0",
+    "p90_ok": true
+  },
+  {
+    "lid": "phonon_energy_quantization",
+    "ok": true,
+    "p90": 1.8222137038935426e-16,
+    "equation": "(x0 * (x1 + 0.5)) * x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "schwinger_limit_electric_field",
+    "ok": true,
+    "p90": 2.1145159301725664e-16,
+    "equation": "x0 * (x3 * ((square(x0) / x2) * (x3 / x1)))",
+    "p90_ok": true
+  },
+  {
+    "lid": "casmir_effect_force",
+    "ok": true,
+    "p90": 2.9381483201081637e-08,
+    "equation": "sqrt((x2 * x2) * (square((0.24163514 / x1) / x1) * square(((x0 * 0.17018779) / x1) / x1)))",
+    "p90_ok": true
+  },
+  {
+    "lid": "mott_scattering_cross_section",
+    "ok": false,
+    "error": "cannot unpack non-iterable NoneType object"
+  },
+  {
+    "lid": "ssp1_builtin_potential_pn_junction",
+    "ok": false,
+    "p90": 13.243882940687907,
+    "equation": "(x0 + log(square(1.2005308 - x0))) * (x2 - log(square(log(square(x0 - x5)) + sqrt(x2))))",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_depletion_width_one_sided",
+    "ok": false,
+    "p90": 0.22784344245802848,
+    "equation": "((((x3 + 1.1156217) / x2) * sqrt(x0 + x1)) * (1.4228636 / square(sqrt(exp(log(sqrt(log(exp(x4 + -0.0",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_srh_recombination_rate",
+    "ok": false,
+    "p90": 2.2810012415039083,
+    "equation": "(1.1937798 / (x3 + square(x0 * square(square(x5))))) + 1.1937798",
+    "p90_ok": false
+  },
+  {
+    "lid": "density_of_states_3d_free_electron",
+    "ok": false,
+    "p90": 4.420791207020873e-07,
+    "equation": "((x2 / square(x1)) / (x1 / sqrt(x0))) / (5.619297 / sqrt((x2 + 6.166707e-7) / 1.5424308))",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_density_of_states_3d",
+    "ok": false,
+    "p90": 0.8000105915778642,
+    "equation": "((((x0 - -0.28726217) - (0.19099258 / x0)) + x2) / square(x1)) * ((x2 * (-0.13163036 / (x1 / -0.5460",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_fermi_energy_free_electron",
+    "ok": false,
+    "p90": 0.003715077688594074,
+    "equation": "x0 * (((((-0.01710625 / x2) - ((-3.1907468 - log(2.7678754 / x2)) * x2)) * x0) - (-0.5857362 * x0)) ",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_fermi_wavevector_3d",
+    "ok": true,
+    "p90": 3.529984746090967e-09,
+    "equation": "square(x0) * (x0 * 0.033773728)",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_effective_density_of_states_conduction",
+    "ok": false,
+    "p90": 5.965097270458533,
+    "equation": "(((0.7997889 - log(x1)) / x1) * 0.7194307) * ((((((x3 * (x0 + -0.28878775)) * x2) + -0.43962476) / x",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_electron_concentration_nondegenerate",
+    "ok": false,
+    "p90": 0.8701949997294317,
+    "equation": "exp(exp((-0.06257674 - square(square(x1 / x4))) / x0))",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_fermi_dirac_distribution",
+    "ok": false,
+    "p90": 1.7502837087789616,
+    "equation": "1.9581709 - square(x3)",
+    "p90_ok": false
+  },
+  {
+    "lid": "ssp1_clausius_mossotti",
+    "ok": false,
+    "error": "cannot unpack non-iterable NoneType object"
+  },
+  {
+    "lid": "ssp1_quantum_hall_resistance",
+    "ok": true,
+    "p90": 1.724998566149495e-16,
+    "equation": "(x0 * square(x1)) * x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_debye_temperature",
+    "ok": false,
+    "p90": 0.016985032287907847,
+    "equation": "((((-0.32359397 / x1) + ((x1 + 3.3861296) + (x1 * -0.18219969))) * x0) / x2) * x3",
+    "p90_ok": true
+  },
+  {
+    "lid": "kramers_rate_theory",
+    "ok": false,
+    "p90": 0.08121470023772821,
+    "equation": "((x0 * x2) - -0.13649508) * square(log(log((x3 / x1) - 2.9568293)))",
+    "p90_ok": false
+  },
+  {
+    "lid": "muon_decay_lifetime",
+    "ok": false,
+    "p90": 115.06448323226921,
+    "equation": "(((sqrt(x2) * ((((122308.9 / x1) / x1) / x1) / x3)) / square(x3)) / x0) / (x0 + x1)",
+    "p90_ok": false
+  },
+  {
+    "lid": "nuclear_rotational_energy",
+    "ok": false,
+    "p90": 8.519262049850792e-05,
+    "equation": "((x2 * (-0.062497992 * (x2 + x2))) + square((x1 + 0.500051) * (x2 * 0.7070927))) / x0",
+    "p90_ok": true
+  },
+  {
+    "lid": "density_of_states_free_particles_3d",
+    "ok": false,
+    "p90": 0.6306956846144826,
+    "equation": "sqrt((sqrt(exp(((x2 * (x2 / x1)) / x3) * (x2 * -23.98507))) * (log(x3) - -2.1191843)) * (square(x0) ",
+    "p90_ok": false
+  },
+  {
+    "lid": "BOSE_003",
+    "ok": false,
+    "error": "cannot unpack non-iterable NoneType object"
+  },
+  {
+    "lid": "ssp1_debye_length_semiconductor",
+    "ok": true,
+    "p90": 6.00000001437317e-08,
+    "equation": "(x4 * (((x0 * x0) / x2) * (0.99999994 / (x1 / x4)))) * x3",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_continuity_equation_steadystate",
+    "ok": true,
+    "p90": 1.4844865205439e-16,
+    "equation": "x0 - (x1 / x2)",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_drift_diffusion_current",
+    "ok": false,
+    "p90": 0.0,
+    "equation": "x2 / ((x0 * x3) + ((x1 * x4) * x5))",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_drude_dielectric_function",
+    "ok": true,
+    "p90": 0.0,
+    "equation": "1.0 - square(x1 / x0)",
+    "p90_ok": true
+  },
+  {
+    "lid": "ssp1_lyddane_sachs_teller",
+    "ok": true,
+    "p90": 1.7205648527704765e-16,
+    "equation": "square(x1) / (square(x2) / x0)",
+    "p90_ok": true
+  },
+  {
+    "lid": "fermi_energy_t0",
+    "ok": false,
+    "p90": 0.002071357570687016,
+    "equation": "x1 * (((sqrt(x2) + -0.07657413) + ((x2 + -0.1796746) * 0.2409347)) * ((x1 / 0.23407377) / x0))",
+    "p90_ok": true
+  },
+  {
+    "lid": "SUPERCONDUCTIVITY_JOSEPHSON_FREQUENCY",
+    "ok": true,
+    "p90": 1.3215525020271258e-16,
+    "equation": "(x1 * (x0 * 2.0)) / x2",
+    "p90_ok": true
+  },
+  {
+    "lid": "FREE_ELECTRON_DRUDE_CONDUCTIVITY",
+    "ok": true,
+    "p90": 1.7235005941545315e-16,
+    "equation": "(((x1 / x0) / x0) / x3) * x2",
+    "p90_ok": true
+  }
+]
